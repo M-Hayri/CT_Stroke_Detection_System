@@ -41,9 +41,31 @@ namespace BTİNME.Controllers
             var doktor = await _context.Doktors
                 .Include(d => d.Hastane)
                     .ThenInclude(h => h.BasHekim) // Eğer Hastane.cs içinde BasHekim ilişkisi tanımlıysa
-                .FirstOrDefaultAsync(d => d.Tc == tc && d.Sifre == sifre);
+                .FirstOrDefaultAsync(d => d.Tc == tc);
 
+            bool sifreDogru = false;
             if (doktor != null)
+            {
+                if (doktor.Sifre.StartsWith("$2"))
+                {
+                    // bcrypt ile hash'lenmiş şifre
+                    sifreDogru = BCrypt.Net.BCrypt.Verify(sifre, doktor.Sifre);
+                }
+                else
+                {
+                    // eski kayıtlardan kalma düz metin şifre: bu girişte doğrula,
+                    // doğruysa veritabanında hash'e yükselt (tek seferlik geçiş,
+                    // ayrı bir migration betiğine gerek kalmadan)
+                    sifreDogru = doktor.Sifre == sifre;
+                    if (sifreDogru)
+                    {
+                        doktor.Sifre = BCrypt.Net.BCrypt.HashPassword(sifre);
+                        await _context.SaveChangesAsync();
+                    }
+                }
+            }
+
+            if (doktor != null && sifreDogru)
             {
                 var claims = new List<Claim>
         {
