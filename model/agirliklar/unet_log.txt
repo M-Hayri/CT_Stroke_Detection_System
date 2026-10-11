@@ -1209,3 +1209,36 @@ N_FAKE_PATH_REMOVED = t
 2026-09-06 19:08:42,045 INFO isinma tamamlandi: 395.9 ms
 2026-09-06 19:08:42,061 INFO tek-goruntu cikarim suresi (isinma sonrasi, 5-fold toplam): 15.8 ms
 2026-09-06 19:08:42,061 INFO ==============================================================================
+2026-10-11 19:15:03,251 INFO ==============================================================================
+2026-10-11 19:15:03,251 INFO BTİNME U-Net cikarim servisi baslatiliyor...
+2026-10-11 19:15:03,251 INFO kol=focal_tversky  mod=ensemble_5fold
+2026-10-11 19:15:03,660 INFO checkpoint SHA-256 dogrulamasi: OK (5/5 eslesti)
+2026-10-11 19:15:03,660 INFO   fold0  e8a876d1a5e3eaf578601ccafced22afa3a8c027e42c11758920ae4ae5e5b554
+2026-10-11 19:15:03,660 INFO   fold1  55f10ef62fb08d26e0ed0aa70d3c382aba99699cef3fa72e90095becb3722430
+2026-10-11 19:15:03,660 INFO   fold2  8579e29654f5e9f6a3dbb4446281f2a97d1108af6a189b450c0a3c79bab6f315
+2026-10-11 19:15:03,660 INFO   fold3  fc0340b0e9014408aa9a0dc27ca3338e065fec84ba5ba0f0c634eb3cfa26a5e1
+2026-10-11 19:15:03,660 INFO   fold4  d4a5e51a8587038402f255d7fa9223a4b6db8e5177e79e9d8aa16d2595251545
+2026-10-11 19:15:03,660 INFO cihaz: cuda
+2026-10-11 19:15:03,984 INFO isinma tamamlandi: 323.6 ms
+2026-10-11 19:15:03,984 INFO tek-goruntu cikarim suresi (isinma sonrasi, 5-fold toplam): 0.0 ms
+2026-10-11 19:15:03,984 INFO ==============================================================================
+2026-10-11 19:21:13,317 INFO istek tamamlandi: dosya=1bd34763-6efe-4806-b0df-20794dbe05e1_10039.png sure=254.4ms lezyonAlanPx=93 girdiKontrol=warn
+2026-10-11 19:21:13,384 INFO istek tamamlandi: dosya=16f1187a-f4ad-479b-a902-73331354fe44_10045.png sure=55.0ms lezyonAlanPx=115 girdiKontrol=warn
+2026-10-11 19:21:13,420 INFO istek tamamlandi: dosya=178349a1-5b6e-4180-858c-02048722cd49_10046.png sure=29.6ms lezyonAlanPx=66 girdiKontrol=warn
+2026-10-11 19:21:13,451 INFO istek tamamlandi: dosya=51f54adf-f38c-4466-b983-f1f3323ace08_10047.png sure=30.2ms lezyonAlanPx=387 girdiKontrol=warn
+2026-10-11 19:21:13,481 INFO istek tamamlandi: dosya=a832c19f-a3a4-45ad-bf23-068332a4d59b_10049.png sure=30.4ms lezyonAlanPx=480 girdiKontrol=warn
+2026-10-11 19:21:13,517 INFO istek tamamlandi: dosya=e2962284-9d31-454b-8292-c9f7f2ec255d_10050.png sure=35.5ms lezyonAlanPx=1544 girdiKontrol=warn
+2026-10-11 19:21:13,548 INFO istek tamamlandi: dosya=1bd34763-6efe-4806-b0df-20794dbe05e1_10039.png sure=29.2ms lezyonAlanPx=93 girdiKontrol=warn
+2026-10-11 19:21:13,578 INFO istek tamamlandi: dosya=29b9b7dc-d908-4c13-baf1-d46180bbb585_10052.png sure=29.9ms lezyonAlanPx=349 girdiKontrol=warn
+2026-10-11 19:21:13,608 INFO istek tamamlandi: dosya=16f1187a-f4ad-479b-a902-73331354fe44_10045.png sure=30.3ms lezyonAlanPx=115 girdiKontrol=warn
+2026-10-11 19:21:13,638 INFO istek tamamlandi: dosya=e3433271-dd21-4d13-b052-4a5c249b047f_10002.png sure=29.8ms lezyonAlanPx=184 girdiKontrol=warn
+2026-10-11 19:21:13,662 INFO istek tamamlandi: dosya=178349a1-5b6e-4180-858c-02048722cd49_10046.png sure=23.5ms lezyonAlanPx=66 girdiKontrol=warn
+2026-10-11 19:21:13,686 INFO istek tamamlandi: dosya=2d6020b1-6f7d-43d5-aa4e-fd1fb5ecc248_10033.png sure=24.3ms lezyonAlanPx=1096 girdiKontrol=warn
+2026-10-11 19:21:13,723 INFO istek tamamlandi: dosya=51f54adf-f38c-4466-b983-f1f3323ace08_10047.png sure=36.2ms lezyonAlanPx=387 girdiKontrol=warn
+2026-10-11 19:21:13,756 INFO istek tamamlandi: dosya=901da6b2-c04f-40b1-ba13-e08c23eae9ec_10036.png sure=33.5ms lezyonAlanPx=290 girdiKontrol=warn
+2026-10-11 19:21:13,783 INFO istek tamamlandi: dosya=a832c19f-a3a4-45ad-bf23-068332a4d59b_10049.png sure=25.1ms lezyonAlanPx=480 girdiKontrol=warn
+2026-10-11 19:21:13,812 INFO istek tamamlandi: dosya=e2962284-9d31-454b-8292-c9f7f2ec255d_10050.png sure=28.0ms lezyonAlanPx=1544 girdiKontrol=warn
+2026-10-11 19:21:13,844 INFO istek tamamlandi: dosya=29b9b7dc-d908-4c13-baf1-d46180bbb585_10052.png sure=32.2ms lezyonAlanPx=349 girdiKontrol=warn
+2026-10-11 19:21:13,875 INFO istek tamamlandi: dosya=e3433271-dd21-4d13-b052-4a5c249b047f_10002.png sure=27.7ms lezyonAlanPx=184 girdiKontrol=warn
+2026-10-11 19:21:13,904 INFO istek tamamlandi: dosya=2d6020b1-6f7d-43d5-aa4e-fd1fb5ecc248_10033.png sure=29.3ms lezyonAlanPx=1096 girdiKontrol=warn
+2026-10-11 19:21:13,935 INFO istek tamamlandi: dosya=901da6b2-c04f-40b1-ba13-e08c23eae9ec_10036.png sure=30.4ms lezyonAlanPx=290 girdiKontrol=warn
