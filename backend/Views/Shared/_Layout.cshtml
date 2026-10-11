@@ -1,0 +1,377 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Klinik Karar Destek Sistemi</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <style>
+        .custom-navbar {
+            background: linear-gradient(135deg, #0b1e36 0%, #1e3a5f 100%);
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .navbar-brand-logo-box {
+            width: 44px;
+            height: 44px;
+            min-width: 44px;
+            border-radius: 10px;
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+        }
+
+        .navbar-brand-logo {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            padding: 3px;
+        }
+
+        .navbar-brand-logo-fallback {
+            display: none;
+            color: #0b1e36;
+            font-size: 1.4rem;
+        }
+
+        .nav-btn-consultation {
+            background-color: rgba(255, 255, 255, 0.12);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            transition: all 0.2s ease;
+        }
+
+            .nav-btn-consultation:hover {
+                background-color: rgba(255, 255, 255, 0.22);
+                color: #ffffff;
+                border-color: rgba(255, 255, 255, 0.4);
+            }
+
+        .user-badge, .hospital-badge {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #e2e8f0;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.2s ease;
+        }
+
+            .hospital-badge:hover {
+                background-color: rgba(255, 255, 255, 0.25);
+                color: #ffffff;
+                cursor: pointer;
+            }
+
+        .unread-badge {
+            font-size: 0.72rem;
+            padding: 0.35em 0.6em;
+            box-shadow: 0 0 10px rgba(220, 53, 69, 0.6);
+        }
+
+        /* --- BÜYÜYÜP KÜÇÜLEN KONSÜLTASYON PANELİ --- */
+        #mesajOffcanvas {
+            width: 580px;
+            min-width: 380px;
+            max-width: 96vw;
+            transition: width 0.15s ease;
+        }
+
+            #mesajOffcanvas.expanded {
+                width: 920px;
+            }
+
+        .offcanvas-resize-handle {
+            position: absolute;
+            top: 0;
+            right: -4px;
+            width: 8px;
+            height: 100%;
+            cursor: col-resize;
+            z-index: 10;
+        }
+
+            .offcanvas-resize-handle:hover,
+            .offcanvas-resize-handle.active-resize {
+                background: rgba(13, 110, 253, 0.25);
+            }
+
+        .panel-expand-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            border-radius: 8px;
+            width: 34px;
+            height: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+            .panel-expand-btn:hover {
+                background: rgba(255, 255, 255, 0.2);
+            }
+    </style>
+</head>
+<body class="bg-light">
+    <header>
+        <nav class="navbar navbar-expand-md navbar-dark custom-navbar shadow-sm mb-4 py-2">
+            <div class="container-fluid px-4">
+
+                <a class="navbar-brand d-flex align-items-center gap-2 me-4" asp-controller="Hasta" asp-action="Index">
+                    <div class="navbar-brand-logo-box">
+                        <img src="~/images/LOGO.jpeg" alt="Logo" class="navbar-brand-logo"
+                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+                        <i class="bi bi-activity navbar-brand-logo-fallback"></i>
+                    </div>
+                    <div class="lh-1">
+                        <span class="fw-bold d-block text-white tracking-wide" style="font-size: 1.1rem; letter-spacing: 1px;">İ N M E</span>
+                        <small class="text-info fw-semibold" style="font-size: 0.65rem; letter-spacing: 1px;">KLİNİK KARAR DESTEK SİSTEMİ</small>
+                    </div>
+                </a>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 align-items-center gap-2">
+                        <li class="nav-item">
+                            <a class="nav-link text-white fw-medium px-3 rounded-3 active" asp-controller="Hasta" asp-action="Index">
+                                <i class="bi bi-people-fill me-1 text-info"></i> Hasta Yönetimi
+                            </a>
+                        </li>
+
+                        <li class="nav-item ms-2">
+                            <button class="btn nav-btn-consultation rounded-pill px-3 py-1-5 btn-sm position-relative d-flex align-items-center"
+                                    type="button"
+                                    data-bs-toggle="offcanvas"
+                                    data-bs-target="#mesajOffcanvas"
+                                    onclick="mesajPaneliAc()">
+                                <i class="bi bi-chat-left-text-fill me-2 text-info"></i> Konsültasyon & Mesajlar
+
+                                <span id="okunmamisRozet" class="badge rounded-pill bg-danger unread-badge ms-2 d-none">
+                                    0
+                                </span>
+                            </button>
+                        </li>
+                    </ul>
+
+                    <div class="d-flex align-items-center gap-2">
+                        @if (User.Identity != null && User.Identity.IsAuthenticated)
+                        {
+                            <!-- HASTANE ROZETİ (Tıklayınca Popup Açılır) -->
+                            <button class="btn hospital-badge rounded-pill px-3 py-1-5 d-flex align-items-center small"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#hastaneDetayModal"
+                                    title="Hastane Detaylarını Gör">
+                                <i class="bi bi-hospital-fill text-warning me-2 fs-6"></i>
+                                <span class="fw-semibold">@(User.FindFirst("HastaneAd")?.Value ?? "Hastane")</span>
+                            </button>
+
+                            <!-- DOKTOR ROZETİ -->
+                            <div class="user-badge rounded-pill px-3 py-1-5 d-flex align-items-center small">
+                                <i class="bi bi-person-badge-fill text-info me-2 fs-6"></i>
+                                <span class="fw-semibold text-white">@User.Identity.Name</span>
+                            </div>
+
+                            <a asp-controller="Account" asp-action="Logout" class="btn btn-outline-light btn-sm rounded-pill px-3 shadow-sm border-opacity-50">
+                                <i class="bi bi-box-arrow-right me-1"></i> Çıkış
+                            </a>
+                        }
+                        else
+                        {
+                            <a asp-controller="Account" asp-action="Login" class="btn btn-info text-dark fw-semibold btn-sm rounded-pill px-3 shadow-sm">
+                                <i class="bi bi-box-arrow-in-right me-1"></i> Giriş Yap
+                            </a>
+                        }
+                    </div>
+
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container-fluid px-4">
+        <main role="main" class="pb-4">
+            @RenderBody()
+        </main>
+    </div>
+
+    <!-- HASTANE DETAY MODAL (POP-UP) -->
+    @if (User.Identity != null && User.Identity.IsAuthenticated)
+    {
+        <div class="modal fade" id="hastaneDetayModal" tabindex="-1" aria-labelledby="hastaneModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content border-0 shadow-lg" style="border-radius: 15px; overflow: hidden;">
+                    <div class="modal-header text-white p-3" style="background: linear-gradient(135deg, #0b1e36 0%, #1e3a5f 100%);">
+                        <h5 class="modal-title fw-bold d-flex align-items-center" id="hastaneModalLabel">
+                            <i class="bi bi-hospital text-warning fs-4 me-2"></i>
+                            @(User.FindFirst("HastaneAd")?.Value ?? "Hastane Bilgisi")
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Kapat"></button>
+                    </div>
+                    <div class="modal-body p-4 bg-light">
+                        <div class="card border-0 shadow-sm rounded-3">
+                            <div class="card-body">
+                                <div class="d-flex align-items-start mb-3">
+                                    <div class="bg-primary bg-opacity-10 p-2 rounded-circle me-3 text-primary">
+                                        <i class="bi bi-geo-alt-fill fs-4"></i>
+                                    </div>
+                                    <div>
+                                        <small class="text-muted fw-bold d-block text-uppercase">Lokasyon</small>
+                                        <span class="fw-semibold text-dark">@(User.FindFirst("HastaneLokasyon")?.Value ?? "-")</span>
+                                    </div>
+                                </div>
+
+                                <hr class="my-2 opacity-25">
+
+                                <div class="d-flex align-items-start mb-3">
+                                    <div class="bg-success bg-opacity-10 p-2 rounded-circle me-3 text-success">
+                                        <i class="bi bi-map-fill fs-4"></i>
+                                    </div>
+                                    <div>
+                                        <small class="text-muted fw-bold d-block text-uppercase">Açık Adres</small>
+                                        <span class="fw-semibold text-dark">@(User.FindFirst("HastaneAdres")?.Value ?? "-")</span>
+                                    </div>
+                                </div>
+
+                                <hr class="my-2 opacity-25">
+
+                                <div class="d-flex align-items-start">
+                                    <div class="bg-warning bg-opacity-10 p-2 rounded-circle me-3 text-warning">
+                                        <i class="bi bi-person-workspace fs-4"></i>
+                                    </div>
+                                    <div>
+                                        <small class="text-muted fw-bold d-block text-uppercase">Kurum Başhekimi</small>
+                                        <span class="fw-semibold text-dark">@(User.FindFirst("HastaneBasHekim")?.Value ?? "-")</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer bg-white border-0">
+                        <button type="button" class="btn btn-secondary btn-sm px-4 rounded-pill" data-bs-dismiss="modal">Kapat</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- SOL TARAFTAN KAYAN KONSÜLTASYON ÇEKMECESİ (OFFCANVAS) -->
+    <div class="offcanvas offcanvas-start border-0 shadow-lg" tabindex="-1" id="mesajOffcanvas">
+        <div class="offcanvas-resize-handle" id="offcanvasResizeHandle"></div>
+
+        <div class="offcanvas-header text-white p-3" style="background: linear-gradient(135deg, #0b1e36 0%, #1e3a5f 100%);">
+            <h5 class="offcanvas-title mb-0 d-flex align-items-center fw-bold">
+                <i class="bi bi-chat-square-quote-fill me-2 text-info"></i> Hekim Konsültasyon Paneli
+            </h5>
+            <div class="d-flex align-items-center gap-2 ms-auto">
+                <button type="button" class="panel-expand-btn" id="panelExpandBtn" onclick="togglePanelExpand()" title="Paneli büyüt/küçült">
+                    <i class="bi bi-arrows-angle-expand" id="panelExpandIcon"></i>
+                </button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+            </div>
+        </div>
+        <div class="offcanvas-body p-0" id="mesajPanelIcerik">
+            <div class="text-center py-5 text-muted">
+                <div class="spinner-border text-primary" role="status"></div>
+                <p class="mt-2 small">Konsültasyon ortamı yükleniyor...</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        function mesajPaneliAc() {
+            doktorSec(null);
+        }
+
+        function doktorSec(aliciId) {
+            var url = '/Mesaj/PanelIcerik' + (aliciId ? '?aliciId=' + aliciId : '');
+            $.get(url, function (data) {
+                $('#mesajPanelIcerik').html(data);
+                var box = document.getElementById("chatMessageBox");
+                if (box) box.scrollTop = box.scrollHeight;
+                okunmamisMesajKontrolEt();
+            });
+        }
+
+        function okunmamisMesajKontrolEt() {
+            $.get('/Mesaj/OkunmamisSayisi', function (count) {
+                var badge = $('#okunmamisRozet');
+                if (count && count > 0) {
+                    badge.text(count).removeClass('d-none');
+                } else {
+                    badge.addClass('d-none');
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            okunmamisMesajKontrolEt();
+            setInterval(okunmamisMesajKontrolEt, 8000);
+        });
+
+        // ---------- PANEL BÜYÜT / KÜÇÜLT ----------
+        function togglePanelExpand() {
+            const panel = document.getElementById('mesajOffcanvas');
+            const icon = document.getElementById('panelExpandIcon');
+            const nowExpanded = panel.classList.toggle('expanded');
+            icon.className = nowExpanded ? 'bi bi-arrows-angle-contract' : 'bi bi-arrows-angle-expand';
+            localStorage.setItem('consultPanelExpanded', nowExpanded ? '1' : '0');
+            panel.style.width = '';
+        }
+
+        // Sayfa açılışında son tercih edilen durumu geri yükle
+        (function restorePanelState() {
+            const panel = document.getElementById('mesajOffcanvas');
+            if (!panel) return;
+            if (localStorage.getItem('consultPanelExpanded') === '1') {
+                panel.classList.add('expanded');
+                document.getElementById('panelExpandIcon').className = 'bi bi-arrows-angle-contract';
+            }
+            const savedWidth = localStorage.getItem('consultPanelWidth');
+            if (savedWidth) {
+                panel.style.width = savedWidth + 'px';
+            }
+        })();
+
+        // ---------- SÜRÜKLEYEREK YENİDEN BOYUTLANDIRMA ----------
+        (function setupResizeHandle() {
+            const handle = document.getElementById('offcanvasResizeHandle');
+            const panel = document.getElementById('mesajOffcanvas');
+            if (!handle || !panel) return;
+
+            let dragging = false;
+
+            handle.addEventListener('mousedown', (e) => {
+                dragging = true;
+                handle.classList.add('active-resize');
+                document.body.style.userSelect = 'none';
+                e.preventDefault();
+            });
+
+            window.addEventListener('mousemove', (e) => {
+                if (!dragging) return;
+                const newWidth = Math.min(window.innerWidth * 0.96, Math.max(380, e.clientX));
+                panel.style.width = newWidth + 'px';
+            });
+
+            window.addEventListener('mouseup', () => {
+                if (!dragging) return;
+                dragging = false;
+                handle.classList.remove('active-resize');
+                document.body.style.userSelect = '';
+                localStorage.setItem('consultPanelWidth', parseInt(panel.style.width, 10));
+            });
+        })();
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

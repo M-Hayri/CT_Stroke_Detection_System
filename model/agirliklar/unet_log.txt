@@ -1,0 +1,1211 @@
+==============================================================================
+J0: VERI ENVANTERI VE SIZINTI KONTROLU (her iki havuz da manifestodan)
+==============================================================================
+train manifest: 6643 satır | label0: 4421 label1: 2222   (N~6644 bekleniyor, -1 bilinen kopya (12002) düşüldü = 6643)
+  xlsx satır: 6650 | disk png (3 sınıf): 6774 | eksik (xlsx∩disk dışı): 6 | diskte-fazla (xlsx dışı): 130 | sızıntı nedeniyle düşülen: 1
+  eksik id'ler bilinen 6 ile eşleşiyor: ['11076', '12140', '13234', '14280', '15317', '16490']
+J0.1: kanama maskesi toplam=1093  dislanan(v3-bos)=10  aday=1083
+      manifesto (label==1, her iki tip) dogrulamasi: 1082/1083 eslesti  eksik=1 -> ['12002']
+      12002 aday listesindeydi mi: True  12002 nihai pozitif havuzda mi: False
+      12002 disinda manifestoda eksik baska kanama ID'si: []
+      kalan pozitif havuz=1082  (beklenen=1082)
+J0.2: manifesto negatif havuzu (label==0)=4421  (beklenen=4421)
+      secilen negatif=1082 (seed=42)
+      secilen ilk 10 ID: ['10011', '10015', '10018', '10022', '10025', '10032', '10037', '10042', '10043', '10048']
+toplam kullanilan ID: 2164 (pozitif=1082 + negatif=1082)
+J0.3(a): kullanilan ID x yarisma MASKS 300 (ID kesisimi) = 0
+J0.3(b): ICERIK (piksel-ozdeslik) taramasi -- kullanilan tum goruntuler x yarisma 300 PNG
+      yarisma MASKS 300 icinde PNG'si bulunan: 297/300
+      hash hesaplama suresi: 4.9s (297 yarisma + 2164 kullanilan goruntu)
+J0.3(b) sonucu: icerik-ozdes cift sayisi = 0
+J0.4: kullanilan ID x features_indomain_heldout (297) (kesisim) = 0
+J0.5: maske on-plan orani (pozitif havuz, n=1082): 0.0068 [0.0030,0.0141] min=0.000219 maks=0.066785
+==============================================================================
+J1: ICERIK-BLOKLU 5-FOLD BOLME
+==============================================================================
+benzerlik cozunurlugu: 64x64 gri (bellek icin indirgenmis)
+goruntu yukleme suresi: 3.6s (n=2164)
+r dagilimi: 0.4639 [0.3754,0.5512] p99=0.7510 maks=1.0000
+blok sayisi: 2107  medyan blok boyutu: 1.0  maks blok boyutu: 8
+en buyuk 5 blok (blok_id, boyut): [(133, 8), (151, 5), (215, 4), (171, 4), (594, 3)]
+tam kopya (r>0.9999): 18 cift
+  [['10039', '11123'], ['10766', '13806'], ['10809', '16862'], ['10865', '12837'], ['11248', '13256'], ['11547', '15901'], ['11592', '15043'], ['11716', '12033'], ['12254', '15597'], ['12390', '15870'], ['12606', '14221'], ['12929', '15023'], ['13260', '15777'], ['13385', '14040'], ['13994', '16886'], ['14098', '15506'], ['14452', '14877'], ['15461', '16806']]
+
+dogrulama: farkli fold'lara dusen r>=0.99 cift sayisi = 0
+  fold 0: toplam=433 pos=216 neg=217
+  fold 1: toplam=433 pos=216 neg=217
+  fold 2: toplam=433 pos=217 neg=216
+  fold 3: toplam=432 pos=216 neg=216
+  fold 4: toplam=433 pos=217 neg=216
+yazildi: C:\Users\HAYRİ\PycharmProjects\StrokeDetectionDLModel\product\dataset_manifest.json (n=2164)
+
+yazildi: C:\Users\HAYRİ\PycharmProjects\StrokeDetectionDLModel\product\unet_results.json
+
+J0+J1 tamamlandi, DUR yok.
+
+##############################################################################
+J4: DEGERLENDIRME VE KAPILAR (product/eval_unet.py)
+##############################################################################
+EK-12 zamanlama beyani: bu bolum yazilirken J3 egitim loglari GORULMUSTUR (fold basina val Dice, sure, checkpoint SHA'lari). Hicbir J4 degerlendirme sayisi GORULMEMISTIR -- hicbir OOF Dice, hicbir taban farki, hicbir kapi ciktisi.
+EK-12.1: birincil ikilileştirme sabit esik 0.5, son-islem YOK (dogrulama J4.0.6'da).
+EK-12.4: birincil kol=focal_tversky (J3'ten once sabitlenmisti).
+
+==============================================================================
+J4.0 -- hizalama ve saglik kontrolu
+==============================================================================
+1) Dice(GT,GT)=1.000000  bos_tahmin+dolu_GT_Dice=0.000000
+2) focal_tversky npz fold dagilimi: {0: 433, 1: 433, 2: 433, 3: 432, 4: 433}  n_toplam=2164
+2) dice_bce npz fold dagilimi: {0: 433, 1: 433, 2: 433, 3: 432, 4: 433}  n_toplam=2164
+3) manifest ID kumesi (n=2164) vs baseline_oof_v2.json ID kumesi (n=2164): fark=0
+4) esleme dict[img_id] uzerinden yapiliyor (indeks sirasina guvenilmiyor) -- yapisal.
+5) n_pos=1082 (beklenen=1082, sapma=0)  n_neg=1082
+6) train_unet.py esikleme: satir 270: pred = (prob > 0.5).astype(np.uint8) -- SABIT 0.5, ic-val veya OOF uzerinden taranmadi.
+7) SHA-256:
+   npz_focal_tversky : 7b4adf0bd88514aa9633562969992cc3318ee4eb1ae93fd0cd83df222f58498b
+   ckpt_focal_tversky_fold0 : e8a876d1a5e3eaf578601ccafced22afa3a8c027e42c11758920ae4ae5e5b554
+   ckpt_focal_tversky_fold1 : 55f10ef62fb08d26e0ed0aa70d3c382aba99699cef3fa72e90095becb3722430
+   ckpt_focal_tversky_fold2 : 8579e29654f5e9f6a3dbb4446281f2a97d1108af6a189b450c0a3c79bab6f315
+   ckpt_focal_tversky_fold3 : fc0340b0e9014408aa9a0dc27ca3338e065fec84ba5ba0f0c634eb3cfa26a5e1
+   ckpt_focal_tversky_fold4 : d4a5e51a8587038402f255d7fa9223a4b6db8e5177e79e9d8aa16d2595251545
+   npz_dice_bce : 288347a1df67b07a652539290888a8d1cefddbf3c18f39a1f413fa0f07ef16ac
+   ckpt_dice_bce_fold0 : cf8313117cf877bacae2bbaec55fdf12b59e821671512328553d6b86921f5738
+   ckpt_dice_bce_fold1 : db97dbffccd255c9ccfbac511e916cd9da06c8d198a4fccd7a6d3a26f855cbe4
+   ckpt_dice_bce_fold2 : 31e07209c6792831d9a837da0c982cd747da9a7be672b443cecbb73b7d0e78c4
+   ckpt_dice_bce_fold3 : 889713e42bdaec52fa2a736bde456deee952bfab93c96337b4c3c831bd4f0a86
+   ckpt_dice_bce_fold4 : 8f4ccdf80f9e2fa6702ef2f4a843441500e9d34048400cf076a9e58fd604910f
+
+J4.0: DUR yok.
+
+==============================================================================
+J4.1 -- asiri-uyum farki anomalisi (pilot bulgusu, kapi degil)
+==============================================================================
+1) train_unet.py train_in_median_dice hangi altkume uzerinden hesaplaniyor:
+   train_eval_ds = SegDataset(train_items, ...) -- train_items FILTRESIZ (pozitif+negatif KARISIK), cls filtresi YOK.
+3) egitim-ici degerlendirme sirasinda veri artirma: train_eval_ds = SegDataset(..., augment=False, ...) -- HAYIR (kapali).
+
+2) kol x fold tablosu (egitim-ici[pozitif] | OOF[pozitif] | fark):
+   focal_tversky fold0: egitim-ici(pos)=0.8338  OOF(pos)=0.8350  fark=-0.0011  n_train_pos=650  n_oof_pos=216
+   focal_tversky fold1: egitim-ici(pos)=0.8531  OOF(pos)=0.8506  fark=0.0025  n_train_pos=649  n_oof_pos=216
+   focal_tversky fold2: egitim-ici(pos)=0.8476  OOF(pos)=0.8310  fark=0.0166  n_train_pos=649  n_oof_pos=217
+   focal_tversky fold3: egitim-ici(pos)=0.8481  OOF(pos)=0.8191  fark=0.0290  n_train_pos=649  n_oof_pos=216
+   focal_tversky fold4: egitim-ici(pos)=0.8190  OOF(pos)=0.8259  fark=-0.0070  n_train_pos=649  n_oof_pos=217
+   dice_bce fold0: egitim-ici(pos)=0.8546  OOF(pos)=0.8543  fark=0.0003  n_train_pos=650  n_oof_pos=216
+   dice_bce fold1: egitim-ici(pos)=0.8673  OOF(pos)=0.8565  fark=0.0108  n_train_pos=649  n_oof_pos=216
+   dice_bce fold2: egitim-ici(pos)=0.8307  OOF(pos)=0.8163  fark=0.0144  n_train_pos=649  n_oof_pos=217
+   dice_bce fold3: egitim-ici(pos)=0.8741  OOF(pos)=0.8527  fark=0.0214  n_train_pos=649  n_oof_pos=216
+   dice_bce fold4: egitim-ici(pos)=0.8544  OOF(pos)=0.8633  fark=-0.0089  n_train_pos=649  n_oof_pos=217
+
+4) fark negatif olan kol x fold(lar) icin pozitif oran + medyan lezyon alani:
+   focal_tversky fold0: fark=-0.0011  egitim-ici medyan_lezyon_alani=313.5px (n=650)  OOF medyan_lezyon_alani=425.0px (n=216)
+   focal_tversky fold4: fark=-0.0070  egitim-ici medyan_lezyon_alani=297.0px (n=649)  OOF medyan_lezyon_alani=391.0px (n=217)
+   dice_bce fold4: fark=-0.0089  egitim-ici medyan_lezyon_alani=297.0px (n=649)  OOF medyan_lezyon_alani=391.0px (n=217)
+
+==============================================================================
+J4.2 -- uc metrik tablosu (blok bootstrap B=10000, sonra kesit-seviyesi duyarlilik)
+uygulanan min-alan esigi (parite satiri, B2 ile birebir ayni): 50px  acma cekirdegi: 3x3 eliptik  M3 temizlik esigi: <50px
+==============================================================================
+  [U-Net(FT)] (block) M1=0.8326 CI=[0.8221,0.8477]  M2=0.0684 CI=[0.0535,0.0838]  M3=0.9640 CI=[0.9529,0.9741]
+  [U-Net(FT)] (slice) M1=0.8326 CI=[0.8231,0.8460]  M2=0.0684 CI=[0.0536,0.0841]  M3=0.9640 CI=[0.9529,0.9741]
+  [U-Net(FT)+min-alan] (block) M1=0.8204 CI=[0.8079,0.8354]  M2=0.1885 CI=[0.1644,0.2125]  M3=0.9658 CI=[0.9547,0.9760]
+  [U-Net(FT)+min-alan] (slice) M1=0.8204 CI=[0.8082,0.8345]  M2=0.1885 CI=[0.1654,0.2116]  M3=0.9658 CI=[0.9547,0.9760]
+  [U-Net(DiceBCE)] (block) M1=0.8508 CI=[0.8369,0.8623]  M2=0.0591 CI=[0.0457,0.0734]  M3=0.9621 CI=[0.9501,0.9732]
+  [U-Net(DiceBCE)] (slice) M1=0.8508 CI=[0.8376,0.8611]  M2=0.0591 CI=[0.0462,0.0730]  M3=0.9621 CI=[0.9501,0.9732]
+  [B2] (block) M1=0.5032 CI=[0.4791,0.5431]  M2=0.2431 CI=[0.2157,0.2720]  M3=0.2939 CI=[0.2671,0.3207]
+  [B2] (slice) M1=0.5032 CI=[0.4823,0.5389]  M2=0.2431 CI=[0.2181,0.2689]  M3=0.2939 CI=[0.2671,0.3207]
+  [B3] (block) M1=0.4655 CI=[0.4295,0.5073]  M2=0.2181 CI=[0.1915,0.2449]  M3=0.5351 CI=[0.5046,0.5647]
+  [B3] (slice) M1=0.4655 CI=[0.4321,0.5056]  M2=0.2181 CI=[0.1932,0.2431]  M3=0.5351 CI=[0.5046,0.5647]
+
+==============================================================================
+J4.3 -- KAPI-U1 (uc kalem, ayri ayri)
+==============================================================================
+M1 (medyan Dice farki, FT-B2): 0.3294 CI=[0.2968,0.3490]  PASS=True
+M2 (tam kacirma orani farki, FT-B3, dusuk iyi): -0.1497 CI=[-0.1766,-0.1234]  PASS=True
+M3 (negatif temizlik orani farki, FT-B3, yuksek iyi): 0.4288 CI=[0.3993,0.4584]  PASS=True
+
+kesit-seviyesi duyarlilik (blok yerine tekil kesit bootstrap):
+  M1: 0.3294 CI=[0.2980,0.3477]
+  M2: -0.1497 CI=[-0.1738,-0.1257]
+  M3: 0.4288 CI=[0.3993,0.4584]
+
+==============================================================================
+J4.4 -- KAPI-U2 (guvenlik) ve KAPI-U3 (mutlak taban)
+==============================================================================
+KAPI-U2: M3=0.9640 CI=[0.9529,0.9741]  esik=0.90  PASS=True
+KAPI-U3: M1=0.8326 CI=[0.8221,0.8477]  esik=0.35  PASS=True
+
+==============================================================================
+J4.5 -- iki kol farki (focal_tversky - dice_bce)
+==============================================================================
+M1 farki: -0.0182 CI=[-0.0254,-0.0070]
+M2 farki: 0.0092 CI=[-0.0019,0.0210]
+M3 farki: 0.0018 CI=[-0.0102,0.0139]
+
+==============================================================================
+J4.6 -- lezyon boyutuna gore tabaka (tertil)
+==============================================================================
+tertil sinirlari (px): c1=204.0  c2=556.7
+
+tabaka=low n=362
+  unet_ft: M1=0.7702  M2=0.1630
+  unet_dicebce: M1=0.7871  M2=0.1381
+  b2: M1=0.0000  M2=0.5249
+  b3: M1=0.0951  M2=0.4751
+
+tabaka=mid n=359
+  unet_ft: M1=0.8502  M2=0.0390
+  unet_dicebce: M1=0.8710  M2=0.0306
+  b2: M1=0.5638  M2=0.1727
+  b3: M1=0.4618  M2=0.1476
+
+tabaka=high n=361
+  unet_ft: M1=0.8656  M2=0.0028
+  unet_dicebce: M1=0.8820  M2=0.0083
+  b2: M1=0.6669  M2=0.0305
+  b3: M1=0.6449  M2=0.0305
+
+==============================================================================
+J4.7 -- alt grup raporu (A=ekstra-aksiyel n=58, B=parankim n=1024; kapi degil)
+==============================================================================
+
+grup=A_ekstraaksiyel n=58
+  unet_ft: M1=0.8335 CI=[0.7548,0.8668]  M2=0.1207 CI=[0.0517,0.2069]
+  b2: M1=0.3810 CI=[0.0000,0.5775]  M2=0.3793 CI=[0.2586,0.5000]
+  b3: M1=0.3240 CI=[0.2000,0.4405]  M2=0.2586 CI=[0.1552,0.3793]
+
+grup=B_parankim n=1024
+  unet_ft: M1=0.8326 CI=[0.8221,0.8484]  M2=0.0654 CI=[0.0504,0.0813]
+  b2: M1=0.5085 CI=[0.4878,0.5460]  M2=0.2354 CI=[0.2064,0.2647]
+  b3: M1=0.4835 CI=[0.4378,0.5131]  M2=0.2158 CI=[0.1891,0.2438]
+
+==============================================================================
+J4.8 -- hata envanteri (birincil kol=focal_tversky)
+==============================================================================
+1) en kotu 10 pozitif kesit (ID, Dice, GT alani):
+   10245: dice=0.0000  gt_area=60px
+   10332: dice=0.0000  gt_area=289px
+   11004: dice=0.0000  gt_area=38px
+   11119: dice=0.0000  gt_area=99px
+   11294: dice=0.0000  gt_area=35px
+   12497: dice=0.0000  gt_area=295px
+   12737: dice=0.0000  gt_area=27px
+   13114: dice=0.0000  gt_area=61px
+   13321: dice=0.0000  gt_area=433px
+   14252: dice=0.0000  gt_area=96px
+2) bos tahmin uretilen pozitif kesit sayisi=67  ID'ler=[np.str_('10222'), np.str_('10332'), np.str_('10394'), np.str_('10745'), np.str_('10766'), np.str_('10820'), np.str_('10877'), np.str_('10951'), np.str_('11004'), np.str_('11119'), np.str_('11316'), np.str_('11483'), np.str_('11797'), np.str_('11862'), np.str_('12165'), np.str_('12275'), np.str_('12365'), np.str_('12477'), np.str_('12497'), np.str_('12552'), np.str_('12737'), np.str_('12794'), np.str_('12971'), np.str_('12984'), np.str_('13106'), np.str_('13114'), np.str_('13160'), np.str_('13321'), np.str_('13427'), np.str_('13493'), np.str_('13806'), np.str_('13815'), np.str_('13899'), np.str_('13940'), np.str_('14252'), np.str_('14311'), np.str_('14386'), np.str_('14435'), np.str_('14746'), np.str_('14889'), np.str_('14963'), np.str_('14985'), np.str_('15054'), np.str_('15241'), np.str_('15315'), np.str_('15376'), np.str_('15391'), np.str_('15491'), np.str_('15736'), np.str_('15738'), np.str_('15812'), np.str_('15920'), np.str_('15975'), np.str_('15997'), np.str_('16020'), np.str_('16124'), np.str_('16391'), np.str_('16418'), np.str_('16501'), np.str_('16701'), np.str_('16714'), np.str_('16744'), np.str_('16747'), np.str_('16861'), np.str_('16950'), np.str_('17000'), np.str_('17009')]
+3) en yuksek yanlis-pozitif alanli 10 negatif kesit (ID, tahmin alani):
+   11807: pred_area=787px
+   13891: pred_area=759px
+   13524: pred_area=655px
+   15890: pred_area=414px
+   15989: pred_area=383px
+   15148: pred_area=328px
+   10315: pred_area=325px
+   16119: pred_area=289px
+   10167: pred_area=245px
+   16853: pred_area=218px
+4) B3 ile kesisim -- en-kotu10: 5/10  bos-tahmin(FT) vs B3-tam-kacirma(dice==0): 50/67  en-yuksek-FP10: 1/10
+   not: B3 icin 'bos tahmin' dogrudan bilinmiyor (yalniz skalar dice/alan mevcut); B3 tarafinda proxy olarak dice==0 (tam kacirma) kullanildi.
+
+==============================================================================
+J4.9 -- kayit
+==============================================================================
+yazildi: C:\Users\HAYRİ\PycharmProjects\StrokeDetectionDLModel\product\unet_results.json (yalniz 'j4' anahtari)
+
+M1_UNET = 0.8326 CI = [0.8221,0.8477]  delta_vs_B2 = 0.3294 CI = [0.2968,0.3490]  PASS = t
+M2_UNET = 0.0684 CI = [0.0535,0.0838]  delta_vs_B3 = -0.1497 CI = [-0.1766,-0.1234]  PASS = t
+M3_UNET = 0.9640 CI = [0.9529,0.9741]  delta_vs_B3 = 0.4288 CI = [0.3993,0.4584]  PASS = t
+GATE_U2_SAFETY = 0.9640   PASS = t
+GATE_U3_FLOOR  = 0.8326 PASS = t
+LOSS_ARM_DELTA_M1 = -0.0182 CI = [-0.0254,-0.0070]
+POSTPROC_M1_DELTA = -0.0122 CI = [-0.0194,-0.0065]
+
+##############################################################################
+K1/K2: OVERLAY KONFAUND AYRIM TESTI (product/confound_check.py)
+##############################################################################
+zamanlama beyani: bu bolum J4 sonuclari GORULDUKTEN SONRA yazilmistir; kapi degil, gecerlilik denetimidir.
+
+==============================================================================
+K1 -- girdi hatti denetimi
+==============================================================================
+kod okuma: product/preprocess.py read_bgr(path_or_array) -- verilen yolu (np.fromfile+cv2.imdecode) DOGRUDAN okur, baska bir dizine yonlendirme yok.
+kod okuma: product/train_unet.py:100 load_input_1ch(img_path): bgr = read_bgr(img_path) -- img_path=it["img_path"] (manifest'ten), satir 332: cache_in[it["img_id"]] = load_input_1ch(it["img_path"]).
+1) pozitif yukleme dizini sablonu : C:\Users\HAYRİ\PycharmProjects\StrokeDetectionDLModel\İNME VERİ SETİ\Kanama\PNG\{img_id}.png
+1) negatif yukleme dizini sablonu  : C:\Users\HAYRİ\PycharmProjects\StrokeDetectionDLModel\İNME VERİ SETİ\İnme Yok\{img_id}.png
+   dizinler farkli mi: True
+
+2/3) n_pos_sample=50  n_neg_sample=50
+     pozitif maske-ici ortalama doygunluk (havuz-ortalamasi): 0.0000
+     pozitif maske-disi ortalama doygunluk (havuz-ortalamasi): 0.0000
+     fark (ici-disi): 0.0000
+     negatif ortalama doygunluk (havuz-ortalamasi): 0.0000
+     kanal-arasi maksimum mutlak fark (tum orneklem, tum bolgeler): 0
+
+5) gri yogunluk (medyan[Q1,Q3]) -- pozitif vs negatif havuz (orneklem):
+   pozitif (maske-ici) : {'median': 157.5, 'q1': 140.0, 'q3': 176.5}
+   pozitif (maske-disi): {'median': 118.5, 'q1': 112.0, 'q3': 134.0}
+   negatif (tum beyin) : {'median': 122.0, 'q1': 114.25, 'q3': 141.75}
+
+4) DUR kosulu: fark(0.0000) > 5.0 VEYA kanal-fark(0) != 0  ->  DUR=False
+
+==============================================================================
+K2 -- eslestirilmis temiz/boyali cikarim
+==============================================================================
+1) boyasiz (OVERLAY olmayan) PNG karsiligi bulunan: pozitif 1082/1082  negatif 1082/1082
+2) cikarim tamamlandi (9.2s)  n=1082
+3) Dice(boyali) medyan=0.8326  Dice(boyasiz) medyan=0.8326  fark=0.0000 CI=[-0.0003,0.0000] (blok bootstrap B=10000)
+4) boyasiz girdide tam kacirma: n=74/1082  oran=0.0684
+5) boyasiz girdide negatif tahmin alani (n=1082): medyan=0.0px  M3(temizlik, <50px)=0.9640 CI=[0.9529,0.9741]
+6) en buyuk 10 dusus (ID, boyali Dice, boyasiz Dice, GT alani):
+   13541: boyali=0.1981  boyasiz=0.1947  GT_alan=463px
+   15772: boyali=0.7339  boyasiz=0.7331  GT_alan=934px
+   15257: boyali=0.5800  boyasiz=0.5795  GT_alan=2069px
+   14124: boyali=0.9240  boyasiz=0.9236  GT_alan=1574px
+   10033: boyali=0.8785  boyasiz=0.8781  GT_alan=1320px
+   12905: boyali=0.5294  boyasiz=0.5290  GT_alan=3228px
+   10002: boyali=0.8813  boyasiz=0.8813  GT_alan=244px
+   10036: boyali=0.9386  boyasiz=0.9386  GT_alan=319px
+   10039: boyali=0.5461  boyasiz=0.5461  GT_alan=211px
+   10045: boyali=0.8429  boyasiz=0.8429  GT_alan=147px
+
+yazildi: C:\Users\HAYRİ\PycharmProjects\StrokeDetectionDLModel\product\unet_results.json (anahtar(lar): k1, k2)
+
+==============================================================================
+K3 -- kayit
+==============================================================================
+
+K1_SAT_IN  = 0.0000   K1_SAT_OUT = 0.0000   K1_DELTA = 0.0000
+K1_CHANNEL_MAXDIFF = 0
+K1_INPUT_DIR_POS = C:\Users\HAYRİ\PycharmProjects\StrokeDetectionDLModel\İNME VERİ SETİ\Kanama\PNG\{img_id}.png
+K1_INPUT_DIR_NEG = C:\Users\HAYRİ\PycharmProjects\StrokeDetectionDLModel\İNME VERİ SETİ\İnme Yok\{img_id}.png
+K1_HALT = f
+K2_N_MATCHED = 1082
+K2_DICE_PAINTED = 0.8326  K2_DICE_CLEAN = 0.8326
+K2_DELTA = 0.0000  CI = [-0.0003,0.0000]
+K2_CLEAN_TOTAL_MISS = 0.0684
+
+toplam sure: 20.4s
+
+##############################################################################
+L1: KOMSULUK-TABAKALI OOF ANALIZI (product/leakage_check.py)
+##############################################################################
+zamanlama beyani: bu bolum J4 ve K1/K2 sonuclari GORULDUKTEN SONRA yazilmistir; kapi degil, yorumlanabilirlik denetimidir.
+
+==============================================================================
+L1.0 -- kurulum ve saglik kontrolu
+==============================================================================
+1) J1 benzerlik hatti dogrulamasi: build_dataset.py -> SIM_SIZE = 64  return cv2.resize(gray, (SIM_SIZE, SIM_SIZE), interpolation=cv2.INTER_AREA).astype(np.float64)
+   bu betikte kullanilan: SIM_SIZE=64, cv2.INTER_AREA, read_bgr+BGR2GRAY, Pearson r (merkezle+L2-normalize+ic-carpim) -- J1 ile BIREBIR AYNI.
+
+2) train_unet.py train_one(): inner_val_fold=(fold+1)%N_FOLDS; train_items = fold not in (fold, inner_val_fold); val_items(ic-val) = fold==inner_val_fold; test_items = fold==fold.
+   fold 0: n_train=1298  n_inner_val=433  n_test=433
+   fold 1: n_train=1298  n_inner_val=433  n_test=433
+   fold 2: n_train=1299  n_inner_val=432  n_test=433
+   fold 3: n_train=1299  n_inner_val=433  n_test=432
+   fold 4: n_train=1298  n_inner_val=433  n_test=433
+
+3) baseline_threshold_v2.py run_cv_variant(): train_pos = fold != f (parametre secimi icin kullanilan bolum, tum siniflar 'fold!=f' olarak alinir).
+   fold 0: n_param_selection=1731
+   fold 1: n_param_selection=1731
+   fold 2: n_param_selection=1731
+   fold 3: n_param_selection=1732
+   fold 4: n_param_selection=1731
+
+4) kesisim kontrolu (test ID kendi egitim/parametre-secim listesinde mi):
+   fold 0: unet kesisim=0  baseline kesisim=0
+   fold 1: unet kesisim=0  baseline kesisim=0
+   fold 2: unet kesisim=0  baseline kesisim=0
+   fold 3: unet kesisim=0  baseline kesisim=0
+   fold 4: unet kesisim=0  baseline kesisim=0
+
+L1.0: DUR yok.
+
+==============================================================================
+L1.1 -- komsuluk skoru
+==============================================================================
+1) 64x64 gri temsil hesabi: 3.9s (n=2164)
+2) not: unet_ft ve unet_dicebce ayni fold bolmesini kullanir -- max_r bir kez hesaplanip iki kola da uygulandi. Ayni sekilde b2 ve b3 de ayni parametre-secim bolumunu kullanir -- max_r bir kez hesaplanip iki taban kola da uygulandi.
+
+3) max_r dagilimi (kaynak basina):
+   unet_ft/unet_dicebce: medyan=0.9275  IQR=[0.8706,0.9638]  p90=0.9791  p99=0.9891  maks=0.9896
+   b2/b3: medyan=0.9417  IQR=[0.8947,0.9697]  p90=0.9811  p99=0.9892  maks=0.9896
+
+4) max_r >= 0.99 olan OOF kesit sayisi: unet=0  baseline=0
+
+5) max_r en yuksek 20 kesit (unet referansli, kesit_id, nn_id, max_r, GT_alani):
+   10039  nn=16471  max_r=0.9896  GT_alan=211px
+   11123  nn=16471  max_r=0.9896  GT_alan=232px
+   16471  nn=10039  max_r=0.9896  GT_alan=255px
+   13819  nn=16131  max_r=0.9894  GT_alan=392px
+   16131  nn=13819  max_r=0.9894  GT_alan=392px
+   10305  nn=14026  max_r=0.9894  GT_alan=109px
+   12172  nn=13919  max_r=0.9894  GT_alan=237px
+   13919  nn=12172  max_r=0.9894  GT_alan=270px
+   13505  nn=16191  max_r=0.9892  GT_alan=495px
+   10853  nn=10887  max_r=0.9891  GT_alan=77px
+   10887  nn=10853  max_r=0.9891  GT_alan=112px
+   12241  nn=13383  max_r=0.9891  GT_alan=491px
+   12001  nn=16058  max_r=0.9890  GT_alan=358px
+   16058  nn=12001  max_r=0.9890  GT_alan=312px
+   11677  nn=14265  max_r=0.9888  GT_alan=573px
+   14265  nn=11677  max_r=0.9888  GT_alan=608px
+   16110  nn=16769  max_r=0.9887  GT_alan=1615px
+   12891  nn=15393  max_r=0.9886  GT_alan=1389px
+   15393  nn=12891  max_r=0.9886  GT_alan=1269px
+   12087  nn=16083  max_r=0.9881  GT_alan=288px
+
+==============================================================================
+L1.2 -- karisiklik kontrolu (tabakalamadan ONCE)
+==============================================================================
+1) max_r vs GT lezyon alani: Spearman rho=0.2064  p=7.12944e-12
+2) grup=A_ekstraaksiyel n=58 max_r medyani=0.9067
+2) grup=B_parankim n=1024 max_r medyani=0.9282
+3) tabaka basina medyan GT alani:
+   T1: n=2  medyan_GT_alan=421.5px
+   T2: n=125  medyan_GT_alan=194.0px
+   T3: n=955  medyan_GT_alan=369.0px
+   T4: n=0  medyan_GT_alan=nanpx
+
+==============================================================================
+L1.3 -- tabakali sonuclar (birincil, sinirlar=(0.6, 0.8, 0.99))
+==============================================================================
+
+1) T1 (< 0.6): n=2  [dusuk n]
+   2) unet_ft: M1=0.8838 CI=[0.8250,0.9425]  M2=0.0000 CI=[0.0000,0.0000]
+   2) unet_dicebce: M1=0.8848 CI=[0.8222,0.9474]  M2=0.0000 CI=[0.0000,0.0000]
+   2) b2: M1=0.3811 CI=[0.0000,0.7621]  M2=0.5000 CI=[0.0000,1.0000]
+   2) b3: M1=0.3993 CI=[0.0000,0.7986]  M2=0.5000 CI=[0.0000,1.0000]
+   3) fark(FT-B2,M1)=0.5027 CI=[0.1804,0.8250]  fark(FT-B3,M2)=-0.5000 CI=[-1.0000,0.0000]
+
+1) T2 ([0.6,0.8)): n=125
+   2) unet_ft: M1=0.8255 CI=[0.7640,0.8523]  M2=0.1600 CI=[0.0968,0.2258]
+   2) unet_dicebce: M1=0.8278 CI=[0.7843,0.8596]  M2=0.1120 CI=[0.0630,0.1694]
+   2) b2: M1=0.3709 CI=[0.0000,0.5068]  M2=0.4400 CI=[0.3520,0.5280]
+   2) b3: M1=0.3282 CI=[0.0708,0.5060]  M2=0.3920 CI=[0.3065,0.4800]
+   3) fark(FT-B2,M1)=0.4546 CI=[0.3257,0.8237]  fark(FT-B3,M2)=-0.2320 CI=[-0.3175,-0.1496]
+
+1) T3 ([0.8,0.99)): n=955
+   2) unet_ft: M1=0.8347 CI=[0.8217,0.8493]  M2=0.0565 CI=[0.0420,0.0722]
+   2) unet_dicebce: M1=0.8530 CI=[0.8381,0.8664]  M2=0.0524 CI=[0.0384,0.0672]
+   2) b2: M1=0.5179 CI=[0.4910,0.5589]  M2=0.2168 CI=[0.1879,0.2482]
+   2) b3: M1=0.4838 CI=[0.4378,0.5137]  M2=0.1948 CI=[0.1675,0.2236]
+   3) fark(FT-B2,M1)=0.3168 CI=[0.2836,0.3423]  fark(FT-B3,M2)=-0.1382 CI=[-0.1668,-0.1109]
+
+1) T4 (>= 0.99): n=0  [dusuk n]
+
+4) egilim (Spearman rho, max_r vs kesit-basi Dice):
+   unet_ft: rho=0.0910  p=0.00273908
+   b2: rho=0.1350  p=8.29517e-06
+   b3: rho=0.1298  p=1.83193e-05
+
+==============================================================================
+L1.4 -- duyarlilik
+==============================================================================
+
+==============================================================================
+L1.3 -- tabakali sonuclar (duyarlilik: sinirlar {0.50,0.70,0.90}, sinirlar=(0.5, 0.7, 0.9))
+==============================================================================
+
+1) T1 (< 0.5): n=1  [dusuk n]
+   2) unet_ft: M1=0.8250 CI=[0.8250,0.8250]  M2=0.0000 CI=[0.0000,0.0000]
+   2) unet_dicebce: M1=0.8222 CI=[0.8222,0.8222]  M2=0.0000 CI=[0.0000,0.0000]
+   2) b2: M1=0.0000 CI=[0.0000,0.0000]  M2=1.0000 CI=[1.0000,1.0000]
+   2) b3: M1=0.0000 CI=[0.0000,0.0000]  M2=1.0000 CI=[1.0000,1.0000]
+   3) fark(FT-B2,M1)=0.8250 CI=[0.8250,0.8250]  fark(FT-B3,M2)=-1.0000 CI=[-1.0000,-1.0000]
+
+1) T2 ([0.5,0.7)): n=24  [dusuk n]
+   2) unet_ft: M1=0.8346 CI=[0.7241,0.9024]  M2=0.1667 CI=[0.0417,0.3333]
+   2) unet_dicebce: M1=0.8281 CI=[0.6528,0.8889]  M2=0.1667 CI=[0.0417,0.3333]
+   2) b2: M1=0.4587 CI=[0.0000,0.7013]  M2=0.3750 CI=[0.1667,0.5833]
+   2) b3: M1=0.3863 CI=[0.0000,0.7125]  M2=0.3750 CI=[0.1667,0.5833]
+   3) fark(FT-B2,M1)=0.3759 CI=[0.0839,0.8255]  fark(FT-B3,M2)=-0.2083 CI=[-0.3750,-0.0417]
+
+1) T3 ([0.7,0.9)): n=370
+   2) unet_ft: M1=0.8275 CI=[0.7986,0.8442]  M2=0.0946 CI=[0.0652,0.1263]
+   2) unet_dicebce: M1=0.8358 CI=[0.8125,0.8531]  M2=0.0784 CI=[0.0515,0.1060]
+   2) b2: M1=0.4287 CI=[0.3634,0.4984]  M2=0.3216 CI=[0.2730,0.3710]
+   2) b3: M1=0.4051 CI=[0.3347,0.4598]  M2=0.2730 CI=[0.2270,0.3189]
+   3) fark(FT-B2,M1)=0.3988 CI=[0.3297,0.4493]  fark(FT-B3,M2)=-0.1784 CI=[-0.2249,-0.1304]
+
+1) T4 (>= 0.9): n=687
+   2) unet_ft: M1=0.8387 CI=[0.8225,0.8572]  M2=0.0509 CI=[0.0353,0.0681]
+   2) unet_dicebce: M1=0.8590 CI=[0.8415,0.8718]  M2=0.0451 CI=[0.0304,0.0616]
+   2) b2: M1=0.5455 CI=[0.4999,0.5824]  M2=0.1951 CI=[0.1618,0.2296]
+   2) b3: M1=0.5080 CI=[0.4602,0.5564]  M2=0.1820 CI=[0.1512,0.2146]
+   3) fark(FT-B2,M1)=0.2933 CI=[0.2631,0.3327]  fark(FT-B3,M2)=-0.1310 CI=[-0.1615,-0.1013]
+
+4) egilim (Spearman rho, max_r vs kesit-basi Dice):
+   unet_ft: rho=0.0910  p=0.00273908
+   b2: rho=0.1350  p=8.29517e-06
+   b3: rho=0.1298  p=1.83193e-05
+
+L1.4.2 -- mean_top5_r ile tekrar (T1-T4 orijinal sinirlarla, M1 satiri)
+   T1: n=9
+     unet_ft: M1=0.8322 CI=[0.7241,0.9228]
+     unet_dicebce: M1=0.8347 CI=[0.7443,0.9328]
+     b2: M1=0.8242 CI=[0.4910,0.8730]
+     b3: M1=0.6813 CI=[0.4339,0.7545]
+   T2: n=361
+     unet_ft: M1=0.8191 CI=[0.7965,0.8364]
+     unet_dicebce: M1=0.8386 CI=[0.8146,0.8583]
+     b2: M1=0.4488 CI=[0.3826,0.4984]
+     b3: M1=0.4142 CI=[0.3347,0.4651]
+   T3: n=712
+     unet_ft: M1=0.8428 CI=[0.8248,0.8572]
+     unet_dicebce: M1=0.8569 CI=[0.8379,0.8710]
+     b2: M1=0.5342 CI=[0.4949,0.5737]
+     b3: M1=0.4976 CI=[0.4427,0.5405]
+   T4: n=0
+
+==============================================================================
+on-kayitli beklentilerin sayisal kontrolu
+==============================================================================
+beklenti-1: T1 unet_ft M1 >= 0.65 -> deger=0.8837717882504841  karsilandi=True
+beklenti-2: her tabakada FT-B2 M1 farki pozitif -> degerler={'T1': 0.5027094325922854, 'T2': 0.45463989611427424, 'T3': 0.31683329663069804}  karsilandi=True
+beklenti-3: |Spearman(max_r,alan)| < 0.15 -> deger=0.2064  karsilandi=False
+beklenti-4: max_r>=0.99 (unet referansli) sayisi==0 -> deger=0  karsilandi=True
+
+==============================================================================
+L1.5 -- kayit
+==============================================================================
+yazildi: C:\Users\HAYRİ\PycharmProjects\StrokeDetectionDLModel\product\unet_results.json (anahtar: l1)
+
+L1_MAXR_MEDIAN = 0.9275  IQR = [0.8706,0.9638]  p99 = 0.9891
+L1_N_GE_099 = 0
+L1_SPEARMAN_MAXR_VS_AREA = 0.2064  p = 7.12944e-12
+L1_SPEARMAN_MAXR_VS_DICE_UNET = 0.0910  p = 0.00273908
+L1_SPEARMAN_MAXR_VS_DICE_B2   = 0.1350  p = 8.29517e-06
+T1_N = 2  T1_M1_UNET = 0.8838 CI = [0.8250,0.9425]  T1_M1_B2 = 0.3811  T1_DELTA = 0.5027 CI = [0.1804,0.8250]
+T2_N = 125  T2_M1_UNET = 0.8255 CI = [0.7640,0.8523]  T2_M1_B2 = 0.3709  T2_DELTA = 0.4546 CI = [0.3257,0.8237]
+T3_N = 955  T3_M1_UNET = 0.8347 CI = [0.8217,0.8493]  T3_M1_B2 = 0.5179  T3_DELTA = 0.3168 CI = [0.2836,0.3423]
+T4_N = 0  T4_M1_UNET = NA CI = [NA,NA]  T4_M1_B2 = NA  T4_DELTA = NA CI = [NA,NA]
+
+toplam sure: 12.5s
+
+##############################################################################
+M1: YARISMA SETI (300, TEK ATISLIK) DEGERLENDIRMESI (product/heldout_eval.py)
+##############################################################################
+EK-15 zamanlama beyani: bu bolum J4, K1/K2, L1 sonuclari GORULDUKTEN SONRA yazilmistir. Yarisma setine ait hicbir sayi daha once GORULMEMISTIR.
+
+==============================================================================
+M1.0 -- kontaminasyon ve hizalama
+==============================================================================
+1a) ID kesisimi: kullanilan(n=2164) x yarisma(n=300) = 0
+1b) icerik (md5) taramasi: yarisma PNG(n=297) x kullanilan(n=2164)  cift-sayisi=0  (4.8s)
+
+2) yarisma kumesinde PNG'si bulunan: 297/300  eksik ID'ler: ['10965', '13347', '16961']
+
+3) maske renk sayimi (n=300): yalniz-kanama=82  yalniz-iskemi=79  her-ikisi=2  hicbiri=137  (toplam=300)  diger-renk-iceren=0
+
+4) yarisma goruntu boyut dagilimi (n=297): {(512, 512): 286, (579, 512): 2, (574, 512): 1, (512, 565): 1, (788, 512): 2, (578, 512): 2, (554, 512): 1, (640, 512): 1, (552, 512): 1}
+   egitim havuzu boyut dagilimi (orneklem n=200): {(512, 512): 196, (759, 512): 2, (512, 565): 2}
+
+5) Dice(GT,GT)=1.000000  bos_tahmin+dolu_GT_Dice=0.000000
+
+6) checkpoint SHA-256 (J4.0 kaydiyla karsilastirma):
+   fold0: hesaplanan=e8a876d1a5e3eaf578601ccafced22afa3a8c027e42c11758920ae4ae5e5b554  J4_kaydi=e8a876d1a5e3eaf578601ccafced22afa3a8c027e42c11758920ae4ae5e5b554  eslesme=True
+   fold1: hesaplanan=55f10ef62fb08d26e0ed0aa70d3c382aba99699cef3fa72e90095becb3722430  J4_kaydi=55f10ef62fb08d26e0ed0aa70d3c382aba99699cef3fa72e90095becb3722430  eslesme=True
+   fold2: hesaplanan=8579e29654f5e9f6a3dbb4446281f2a97d1108af6a189b450c0a3c79bab6f315  J4_kaydi=8579e29654f5e9f6a3dbb4446281f2a97d1108af6a189b450c0a3c79bab6f315  eslesme=True
+   fold3: hesaplanan=fc0340b0e9014408aa9a0dc27ca3338e065fec84ba5ba0f0c634eb3cfa26a5e1  J4_kaydi=fc0340b0e9014408aa9a0dc27ca3338e065fec84ba5ba0f0c634eb3cfa26a5e1  eslesme=True
+   fold4: hesaplanan=d4a5e51a8587038402f255d7fa9223a4b6db8e5177e79e9d8aa16d2595251545  J4_kaydi=d4a5e51a8587038402f255d7fa9223a4b6db8e5177e79e9d8aa16d2595251545  eslesme=True
+
+M1.0: DUR yok.
+
+degerlendirme kumesi: kanama(yalniz+her-ikisi)=83  iskemi-yalniz=77
+
+==============================================================================
+M1.1 -- kanama alt kumesi birincil sonuclar (n=83)
+==============================================================================
+
+--- kol=focal_tversky ---
+  fold0: M1=0.8884  M2=0.0241
+  fold1: M1=0.9125  M2=0.0241
+  fold2: M1=0.9161  M2=0.0120
+  fold3: M1=0.9021  M2=0.0241
+  fold4: M1=0.8968  M2=0.0482
+  1/2) birincil rakam: 5-M1 medyani=0.9021  min=0.8884  maks=0.9161  (5 deger: [0.8884, 0.9125, 0.9161, 0.9021, 0.8968])
+  3) 5-fold-medyan vektorunden M1=0.9014 CI=[0.8851,0.9167]  M2=0.0241 CI=[0.0000,0.0602]  (kesit-seviyesi bootstrap, J1 bloklari bu kumede TANIMLI DEGIL)
+  5) topluluk: M1=0.9032 CI=[0.8886,0.9227]  M2=0.0241 CI=[0.0000,0.0602]
+  6) parite (50px min-alan, 3x3 acma): M1=0.9125 CI=[0.8863,0.9171]  M2=0.0843 CI=[0.0241,0.1446]
+
+--- kol=dice_bce ---
+  fold0: M1=0.9034  M2=0.0120
+  fold1: M1=0.9065  M2=0.0241
+  fold2: M1=0.8973  M2=0.0602
+  fold3: M1=0.9109  M2=0.0241
+  fold4: M1=0.8973  M2=0.0361
+  1/2) birincil rakam: 5-M1 medyani=0.9034  min=0.8973  maks=0.9109  (5 deger: [0.9034, 0.9065, 0.8973, 0.9109, 0.8973])
+  3) 5-fold-medyan vektorunden M1=0.9029 CI=[0.8784,0.9130]  M2=0.0241 CI=[0.0000,0.0602]  (kesit-seviyesi bootstrap, J1 bloklari bu kumede TANIMLI DEGIL)
+  5) topluluk: M1=0.9081 CI=[0.8905,0.9187]  M2=0.0241 CI=[0.0000,0.0602]
+
+==============================================================================
+M1.2 -- taban, dondurulmus parametrelerle
+==============================================================================
+dondurulmus parametreler (koddan okunur, degistirilmez): B2: pct=90 alan=50  B3: l=150 hi=250(BAND_HI sabiti) alan=25
+B2: M1=0.6524 CI=[0.5844,0.7117]  M2=0.1084 CI=[0.0482,0.1807]
+B3: M1=0.5825 CI=[0.5108,0.6944]  M2=0.1566 CI=[0.0843,0.2410]
+
+eslestirilmis farklar:
+  U-Net FT - B2 (M1): 0.2489 CI=[0.1943,0.3126]
+  U-Net FT - B3 (M2): -0.1325 CI=[-0.2048,-0.0602]
+
+==============================================================================
+M1.3 -- dusus analizi (OOF'a karsi)
+==============================================================================
+U-Net FT    OOF=0.8326  heldout=0.9014  mutlak_dusus=-0.0688  oransal_dusus=-0.0826
+B2          OOF=0.5032  heldout=0.6524  mutlak_dusus=-0.1493  oransal_dusus=-0.2967
+B3          OOF=0.4655  heldout=0.5825  mutlak_dusus=-0.1169  oransal_dusus=-0.2512
+
+==============================================================================
+M1.4 -- zor negatif: iskemi-yalniz kesitler (n=77)
+==============================================================================
+1) U-Net FT tahmin alani (5-fold medyan, n=77): medyan=0.0px  IQR=[0.0,0.0]px  temizlik(<50px)=0.9610 CI=[0.9091,1.0000]
+2) B2 temizlik(<50px)=0.2208 CI=[0.1299,0.3117]  B3 temizlik=0.6883 CI=[0.5844,0.7922]
+3) J4 normal-negatif temizligi (U-Net FT)=0.9640  vs iskemi-zor-negatif=0.9610
+   10901: tahmin_alan=111px  iskemi_GT_alan=1782px  IoU(tahmin,iskemi_GT)=0.0037
+   10461: tahmin_alan=94px  iskemi_GT_alan=801px  IoU(tahmin,iskemi_GT)=0.0000
+   14101: tahmin_alan=75px  iskemi_GT_alan=537px  IoU(tahmin,iskemi_GT)=0.0000
+   16012: tahmin_alan=19px  iskemi_GT_alan=536px  IoU(tahmin,iskemi_GT)=0.0000
+   13230: tahmin_alan=18px  iskemi_GT_alan=209px  IoU(tahmin,iskemi_GT)=0.0000
+   10241: tahmin_alan=0px  iskemi_GT_alan=257px  IoU(tahmin,iskemi_GT)=0.0000
+   11074: tahmin_alan=0px  iskemi_GT_alan=321px  IoU(tahmin,iskemi_GT)=0.0000
+   11104: tahmin_alan=0px  iskemi_GT_alan=81px  IoU(tahmin,iskemi_GT)=0.0000
+   11114: tahmin_alan=0px  iskemi_GT_alan=958px  IoU(tahmin,iskemi_GT)=0.0000
+   11263: tahmin_alan=0px  iskemi_GT_alan=611px  IoU(tahmin,iskemi_GT)=0.0000
+
+==============================================================================
+M1.5 -- lezyon boyutuna gore tabaka (J4.6 sabit sinirlar)
+==============================================================================
+sabit sinirlar (J4.6'dan, yeniden hesaplanmadi): c1=204.0  c2=556.6666666666672
+
+tabaka=low n=29
+  unet_ft: M1=0.8851  M2=0.0345
+  b2: M1=0.3145  M2=0.3103
+  b3: M1=0.3107  M2=0.3793
+
+tabaka=mid n=30
+  unet_ft: M1=0.8902  M2=0.0333
+  b2: M1=0.6944  M2=0.0000
+  b3: M1=0.6057  M2=0.0333
+
+tabaka=high n=24
+  unet_ft: M1=0.9181  M2=0.0000
+  b2: M1=0.8380  M2=0.0000
+  b3: M1=0.7861  M2=0.0417
+
+==============================================================================
+M1.6 -- hata envanteri
+==============================================================================
+1) en kotu 10 kanama kesidi:
+   13037: dice=0.0000  GT_alan=57px
+   13222: dice=0.0000  GT_alan=365px
+   16242: dice=0.0082  GT_alan=1212px
+   11351: dice=0.5915  GT_alan=1011px
+   15708: dice=0.6393  GT_alan=580px
+   12009: dice=0.6437  GT_alan=118px
+   16463: dice=0.6486  GT_alan=53px
+   13176: dice=0.6731  GT_alan=207px
+   14816: dice=0.7206  GT_alan=100px
+   14839: dice=0.7416  GT_alan=464px
+2) bos tahmin uretilen kanama kesidi: n=2  ID'ler=['13037', '13222']
+3) B3 tam-kacirma ile kesisim: 2/2
+
+==============================================================================
+M1.7 -- kayit
+==============================================================================
+yazildi: C:\Users\HAYRİ\PycharmProjects\StrokeDetectionDLModel\product\unet_results.json (anahtar: m1)
+
+==============================================================================
+on-kayitli beklentilerin sayisal kontrolu
+==============================================================================
+beklenti-1: U-Net FT M1 in [0.70,0.82] -> deger=0.9014  karsilandi=False
+beklenti-2: B2 M1 in [0.40,0.52] -> deger=0.6524  karsilandi=False
+beklenti-3: U-Net-B2 farki pozitif ve GA sifiri disliyor -> deger=0.2489 CI=[0.19432646426511457, 0.3126283565118516]  karsilandi=True
+beklenti-4: iskemi temizligi < normal negatif temizligi -> iskemi=0.9610  normal=0.9640  karsilandi=True
+beklenti-5: topluluk > tek-fold-medyani -> topluluk=0.9032  tek-fold-medyani=0.9014  karsilandi=True
+M1_HELDOUT_N_KANAMA = 83   N_ISKEMI_ONLY = 77   N_MISSING_PNG = 3
+M1_UNET_FT_PERFOLD = [0.8884,0.9125,0.9161,0.9021,0.8968]
+M1_UNET_FT = 0.9014 CI = [0.8851,0.9167]
+M1_UNET_ENSEMBLE = 0.9032 CI = [0.8886,0.9227]
+M1_UNET_DICEBCE = 0.9029 CI = [0.8784,0.9130]
+M1_B2 = 0.6524 CI = [0.5844,0.7117]    M1_B3 = 0.5825 CI = [0.5108,0.6944]
+DELTA_M1_VS_B2 = 0.2489 CI = [0.1943,0.3126]
+M2_UNET_FT = 0.0241 CI = [0.0000,0.0602]   M2_B3 = 0.1566 CI = [0.0843,0.2410]
+DELTA_M2_VS_B3 = -0.1325 CI = [-0.2048,-0.0602]
+DROP_UNET_REL = -0.0826   DROP_B2_REL = -0.2967   DROP_B3_REL = -0.2512
+ISKEMI_CLEANLINESS_UNET = 0.9610 CI = [0.9091,1.0000]
+
+toplam sure: 63.2s
+
+##############################################################################
+J5: GORSEL QC, SON KAPI (product/qc_panels.py)
+##############################################################################
+Salt-okunur + salt-cikarim: hicbir model egitilmez, hicbir parametre secilmez, hicbir mevcut .npz/.pt/.json anahtari uzerine yazilmaz. M1 sayilari kesinlesmistir ve bu bolumdeki hicbir gozleme dayanarak degistirilemez.
+
+==============================================================================
+J5.0 -- saglik kontrolu
+==============================================================================
+1) panel uretiminde kullanilan img_path == cikarimda kullanilan img_path (product/confound_check.py K1'de dogrulanmis hat: manifest['img_path'], OVERLAY degil). OVERLAY icerikli img_path sayisi=0
+2) OOF kaynagi: C:\Users\HAYRİ\PycharmProjects\StrokeDetectionDLModel\product\unet_oof_focal_tversky.npz (n=2164, yeniden hesaplanmadi, dogrudan okundu).
+   M1 (yarisma seti) kalici piksel-tahmin dosyasi aranan adaylar:
+     C:\Users\HAYRİ\PycharmProjects\StrokeDetectionDLModel\product\heldout_pred_focal_tversky.npz  bulundu=False
+     C:\Users\HAYRİ\PycharmProjects\StrokeDetectionDLModel\product\m1_pred_focal_tversky.npz  bulundu=False
+     C:\Users\HAYRİ\PycharmProjects\StrokeDetectionDLModel\product\competition_pred_focal_tversky.npz  bulundu=False
+!! DUR (yalniz J5.2): yarisma seti icin kalici piksel-tahmin dosyasi bulunamadi (product/heldout_eval.py:m1_1 ensemble_pred'i yalniz bellekte tutar, JSON'a yazmadan once strip_masks() ile atar). YENIDEN CIKARIM YAPILMAYACAK -- J5.2 atlanir. J5.1/J5.3 (yalniz OOF'a dayanir) etkilenmez.
+
+J5.0: J5.1/J5.3 icin DUR yok. J5.2 icin DUR (yukarida).
+
+==============================================================================
+J5.1 -- OOF panelleri (24 adet, birincil, esik=0.5, son-islem yok)
+==============================================================================
+tabaka boyutlari: [('en_yuksek_dice', 3), ('medyan_dice', 5), ('en_dusuk_dice', 4), ('bos_tahmin_pozitif', 3), ('kucuk_lezyon', 3), ('ekstraaksiyel_A', 2), ('negatif_en_yuksek_fp', 2), ('negatif_temiz', 2)]
+medyan Dice degeri=0.8326  bos-tahmin havuzu n=67  kucuk-lezyon(<204px) havuzu n=358  alt-grup-A pozitif havuz n=58  negatif-temiz havuz n=962
+  [en_yuksek_dice] 13084 | Dice=0.977 | GT_alan=620px | tahmin_alan=594px | en_yuksek_dice
+  [en_yuksek_dice] 16227 | Dice=0.973 | GT_alan=112px | tahmin_alan=110px | en_yuksek_dice
+  [en_yuksek_dice] 10719 | Dice=0.971 | GT_alan=1919px | tahmin_alan=1893px | en_yuksek_dice
+  [medyan_dice] 14831 | Dice=0.832 | GT_alan=362px | tahmin_alan=407px | medyan_dice
+  [medyan_dice] 12446 | Dice=0.833 | GT_alan=3351px | tahmin_alan=2395px | medyan_dice
+  [medyan_dice] 14308 | Dice=0.832 | GT_alan=1140px | tahmin_alan=821px | medyan_dice
+  [medyan_dice] 14227 | Dice=0.832 | GT_alan=1500px | tahmin_alan=1075px | medyan_dice
+  [medyan_dice] 12817 | Dice=0.833 | GT_alan=12px | tahmin_alan=12px | medyan_dice
+  [en_dusuk_dice] 10222 | Dice=0.000 | GT_alan=57px | tahmin_alan=0px | en_dusuk_dice
+  [en_dusuk_dice] 10245 | Dice=0.000 | GT_alan=60px | tahmin_alan=19px | en_dusuk_dice
+  [en_dusuk_dice] 10332 | Dice=0.000 | GT_alan=289px | tahmin_alan=0px | en_dusuk_dice
+  [en_dusuk_dice] 10394 | Dice=0.000 | GT_alan=551px | tahmin_alan=0px | en_dusuk_dice
+  [bos_tahmin_pozitif] 10820 | Dice=0.000 | GT_alan=67px | tahmin_alan=0px | bos_tahmin_pozitif
+  [bos_tahmin_pozitif] 15241 | Dice=0.000 | GT_alan=13px | tahmin_alan=0px | bos_tahmin_pozitif
+  [bos_tahmin_pozitif] 15920 | Dice=0.000 | GT_alan=45px | tahmin_alan=0px | bos_tahmin_pozitif
+  [kucuk_lezyon] 10766 | Dice=0.000 | GT_alan=144px | tahmin_alan=0px | kucuk_lezyon
+  [kucuk_lezyon] 15054 | Dice=0.000 | GT_alan=16px | tahmin_alan=0px | kucuk_lezyon
+  [kucuk_lezyon] 15920 | Dice=0.000 | GT_alan=45px | tahmin_alan=0px | kucuk_lezyon
+  [ekstraaksiyel_A] 13350 | Dice=0.867 | GT_alan=421px | tahmin_alan=322px | ekstraaksiyel_A
+  [ekstraaksiyel_A] 16684 | Dice=0.839 | GT_alan=2025px | tahmin_alan=1493px | ekstraaksiyel_A
+  [negatif_en_yuksek_fp] 11807 | Dice=n/a | GT_alan=0px | tahmin_alan=787px | negatif_en_yuksek_fp
+  [negatif_en_yuksek_fp] 13891 | Dice=n/a | GT_alan=0px | tahmin_alan=759px | negatif_en_yuksek_fp
+  [negatif_temiz] 14858 | Dice=n/a | GT_alan=0px | tahmin_alan=0px | negatif_temiz
+  [negatif_temiz] 15176 | Dice=n/a | GT_alan=0px | tahmin_alan=0px | negatif_temiz
+yazildi: C:\Users\HAYRİ\PycharmProjects\StrokeDetectionDLModel\product\qc\oof_qc_1.png (6 panel)
+yazildi: C:\Users\HAYRİ\PycharmProjects\StrokeDetectionDLModel\product\qc\oof_qc_2.png (6 panel)
+yazildi: C:\Users\HAYRİ\PycharmProjects\StrokeDetectionDLModel\product\qc\oof_qc_3.png (6 panel)
+yazildi: C:\Users\HAYRİ\PycharmProjects\StrokeDetectionDLModel\product\qc\oof_qc_4.png (6 panel)
+
+3) rastgele 3 panelde cizilen alan <-> kayitli/bagimsiz-yeniden-okunan alan:
+   10394: kaynak=j4_8.empty_pred_positive  kayitli=0  panelde_cizilen=0  eslesme=True
+   11807: kaynak=j4_8.top10_false_positive_negative  kayitli=787  panelde_cizilen=787  eslesme=True
+   10719: unet_results.json'da kayit yok -> npz'den bagimsiz yeniden-okuma (ayni dosya, ID ile, yeniden cikarim degil): npz_alan=1893  panelde_cizilen=1893  eslesme=True
+
+==============================================================================
+J5.2 -- yarisma seti panelleri
+==============================================================================
+J5.2 ATLANDI: J5.0.2 DUR verdi (M1 piksel-tahmin dosyasi yok, yeniden cikarim yapilmadi).
+
+==============================================================================
+J5.3 -- cok odaklilik taramasi (B-5)
+==============================================================================
+1) OOF pozitif havuzunda GT>=2 bagli-bilesenli kesit sayisi = 393 / 1082
+2) GT bilesen sayisi vs tahmin bilesen sayisi capraz tablo (GT_n, tahmin_n): sayim
+   (1,0): 48
+   (1,1): 496
+   (1,2): 96
+   (1,3): 35
+   (1,4): 10
+   (1,5): 2
+   (1,6): 2
+   (2,0): 15
+   (2,1): 59
+   (2,2): 99
+   (2,3): 39
+   (2,4): 13
+   (2,5): 4
+   (2,6): 2
+   (2,7): 1
+   (3,0): 2
+   (3,1): 7
+   (3,2): 29
+   (3,3): 29
+   (3,4): 20
+   (3,5): 1
+   (3,6): 1
+   (3,7): 1
+   (3,10): 1
+   (4,0): 2
+   (4,1): 2
+   (4,2): 4
+   (4,3): 7
+   (4,4): 12
+   (4,5): 3
+   (4,6): 1
+   (4,7): 2
+   (4,8): 1
+   (5,2): 2
+   (5,3): 1
+   (5,4): 3
+   (5,5): 2
+   (5,6): 2
+   (5,7): 3
+   (5,9): 2
+   (5,11): 1
+   (6,2): 1
+   (6,3): 2
+   (6,5): 1
+   (6,7): 2
+   (6,8): 1
+   (7,2): 1
+   (7,3): 1
+   (7,4): 1
+   (7,5): 1
+   (7,7): 1
+   (8,2): 1
+   (8,3): 1
+   (8,4): 1
+   (9,7): 2
+   (10,6): 1
+   (14,6): 2
+3) GT>=2 bilesenli kesitlerde en-buyuk-olmayan bilesen yakalanma orani (bilesen bazinda): 452/717 = 0.6304
+  [multifocal] 11136 | GT_bilesen=2 | tahmin_bilesen=2 | ikincil_yakalanan=1/1 | multifocal
+  [multifocal] 12453 | GT_bilesen=2 | tahmin_bilesen=4 | ikincil_yakalanan=1/1 | multifocal
+  [multifocal] 15353 | GT_bilesen=2 | tahmin_bilesen=2 | ikincil_yakalanan=1/1 | multifocal
+  [multifocal] 16453 | GT_bilesen=2 | tahmin_bilesen=2 | ikincil_yakalanan=1/1 | multifocal
+yazildi: C:\Users\HAYRİ\PycharmProjects\StrokeDetectionDLModel\product\qc\multifocal_qc.png (4 panel)
+
+==============================================================================
+J5.4 -- kayit
+==============================================================================
+yazildi: C:\Users\HAYRİ\PycharmProjects\StrokeDetectionDLModel\product\unet_results.json (yalniz 'j5' anahtari)
+
+J5_PANELS_OOF = 4   J5_PANELS_HELDOUT = 0
+J5_MULTIFOCAL_N = 393   J5_SECONDARY_FOCI_RECALL = 0.6304
+J5_FILES = ['C:\\Users\\HAYRİ\\PycharmProjects\\StrokeDetectionDLModel\\product\\qc\\oof_qc_1.png', 'C:\\Users\\HAYRİ\\PycharmProjects\\StrokeDetectionDLModel\\product\\qc\\oof_qc_2.png', 'C:\\Users\\HAYRİ\\PycharmProjects\\StrokeDetectionDLModel\\product\\qc\\oof_qc_3.png', 'C:\\Users\\HAYRİ\\PycharmProjects\\StrokeDetectionDLModel\\product\\qc\\oof_qc_4.png', 'C:\\Users\\HAYRİ\\PycharmProjects\\StrokeDetectionDLModel\\product\\qc\\multifocal_qc.png']
+
+toplam sure: 2.2s
+
+Sonuc: paneller kullanici tarafindan incelenecektir. Onay, B-1...B-6 olcutlerinin her biri icin acik bir 'gozlenmedi' kaydiyla verilir. Bu betik hukum etiketi yazmaz.
+2026-08-04 10:56:02,116 INFO ==============================================================================
+2026-08-04 10:56:02,116 INFO N2: BTİNME cikarim servisi baslatiliyor (Pyton/app.py, N-v2)
+2026-08-04 10:56:02,116 INFO kol=focal_tversky  mod=ensemble_5fold
+2026-08-04 10:56:02,711 INFO checkpoint SHA-256 dogrulamasi: OK (5/5 eslesti)
+2026-08-04 10:56:02,711 INFO   fold0  e8a876d1a5e3eaf578601ccafced22afa3a8c027e42c11758920ae4ae5e5b554
+2026-08-04 10:56:02,711 INFO   fold1  55f10ef62fb08d26e0ed0aa70d3c382aba99699cef3fa72e90095becb3722430
+2026-08-04 10:56:02,711 INFO   fold2  8579e29654f5e9f6a3dbb4446281f2a97d1108af6a189b450c0a3c79bab6f315
+2026-08-04 10:56:02,711 INFO   fold3  fc0340b0e9014408aa9a0dc27ca3338e065fec84ba5ba0f0c634eb3cfa26a5e1
+2026-08-04 10:56:02,711 INFO   fold4  d4a5e51a8587038402f255d7fa9223a4b6db8e5177e79e9d8aa16d2595251545
+2026-08-04 10:56:02,711 INFO cihaz: cuda
+2026-08-04 10:56:03,056 INFO isinma tamamlandi: 345.4 ms
+2026-08-04 10:56:03,068 INFO tek-goruntu cikarim suresi (isinma sonrasi, 5-fold toplam): 12.0 ms
+2026-08-04 10:56:03,068 INFO ==============================================================================
+2026-08-04 11:01:37,209 INFO ==============================================================================
+2026-08-04 11:01:37,209 INFO N2: BTİNME cikarim servisi baslatiliyor (Pyton/app.py, N-v2)
+2026-08-04 11:01:37,209 INFO kol=focal_tversky  mod=ensemble_5fold
+2026-08-04 11:01:37,719 INFO checkpoint SHA-256 dogrulamasi: OK (5/5 eslesti)
+2026-08-04 11:01:37,719 INFO   fold0  e8a876d1a5e3eaf578601ccafced22afa3a8c027e42c11758920ae4ae5e5b554
+2026-08-04 11:01:37,719 INFO   fold1  55f10ef62fb08d26e0ed0aa70d3c382aba99699cef3fa72e90095becb3722430
+2026-08-04 11:01:37,719 INFO   fold2  8579e29654f5e9f6a3dbb4446281f2a97d1108af6a189b450c0a3c79bab6f315
+2026-08-04 11:01:37,723 INFO   fold3  fc0340b0e9014408aa9a0dc27ca3338e065fec84ba5ba0f0c634eb3cfa26a5e1
+2026-08-04 11:01:37,723 INFO   fold4  d4a5e51a8587038402f255d7fa9223a4b6db8e5177e79e9d8aa16d2595251545
+2026-08-04 11:01:37,737 INFO cihaz: cuda
+2026-08-04 11:01:37,894 INFO isinma tamamlandi: 156.7 ms
+2026-08-04 11:01:37,903 INFO tek-goruntu cikarim suresi (isinma sonrasi, 5-fold toplam): 8.9 ms
+2026-08-04 11:01:37,905 INFO ==============================================================================
+2026-08-04 11:01:50,479 INFO istek tamamlandi: dosya=13032.png sure=217.1ms lezyonAlanPx=2491 girdiKontrol=warn
+2026-08-04 11:01:50,515 INFO istek tamamlandi: dosya=12446.png sure=30.9ms lezyonAlanPx=2221 girdiKontrol=warn
+2026-08-04 11:01:50,551 INFO istek tamamlandi: dosya=10434.png sure=35.6ms lezyonAlanPx=2084 girdiKontrol=warn
+2026-08-04 11:01:50,594 INFO istek tamamlandi: dosya=10688.png sure=30.4ms lezyonAlanPx=2233 girdiKontrol=warn
+2026-08-04 11:01:50,630 INFO istek tamamlandi: dosya=12465.png sure=30.2ms lezyonAlanPx=2132 girdiKontrol=warn
+2026-08-04 11:01:50,661 INFO istek tamamlandi: dosya=10011.png sure=28.1ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 11:01:50,697 INFO istek tamamlandi: dosya=13032.png sure=26.6ms lezyonAlanPx=148 girdiKontrol=warn
+==============================================================================
+N3: duman testi baslatiliyor (2026-08-04T11:01:49)
+1) checkpoint SHA-256 (bagimsiz dogrulama): OK
+   fold0: eslesti
+   fold1: eslesti
+   fold2: eslesti
+   fold3: eslesti
+   fold4: eslesti
+   [pozitif 13032] status=200 lezyonAlanPx=2491 sure=241.4ms OK
+   [pozitif 12446] status=200 lezyonAlanPx=2221 sure=36.1ms OK
+   [pozitif 10434] status=200 lezyonAlanPx=2084 sure=36.5ms OK
+   [pozitif 10688] status=200 lezyonAlanPx=2233 sure=42.7ms OK
+   [pozitif 12465] status=200 lezyonAlanPx=2132 sure=36.1ms OK
+2) 5 bilinen pozitif OOF goruntu: OK
+3) negatif goruntu (10011): status=200 inmeVarMi=False sure=30.1ms OK
+4) kasitli OVERLAY goruntu (13032): status=200 girdiKontrol.durum=warn sure=36.6ms OK
+5) bozuk dosya: status=400 sure=6.3ms OK
+6) uctan uca sure: medyan=36.5ms (n=7 istek)
+7) N2.0 temizlik dogrulamasi (SegmentasyonYap silindi, yedek mevcut, strokenext_best_model.pt referansi yok): OK
+yazildi: C:\Users\HAYRİ\PycharmProjects\StrokeDetectionDLModel\product\unet_results.json -> 'n1' anahtari
+
+N_ARM = focal_tversky   N_MODE = ensemble_5fold
+N_SHA_MATCH = t
+N_DEVICE = cuda   N_INFER_MS = 36.5
+N_SMOKE = passed
+N_FAKE_PATH_REMOVED = t
+==============================================================================
+2026-08-04 11:03:05,245 INFO istek tamamlandi: dosya=13032.png sure=242.4ms lezyonAlanPx=2491 girdiKontrol=warn
+2026-08-04 11:03:24,180 INFO istek tamamlandi: dosya=13032.png sure=302.0ms lezyonAlanPx=148 girdiKontrol=warn
+2026-08-04 11:06:24,866 INFO ==============================================================================
+2026-08-04 11:06:24,866 INFO N2: BTİNME cikarim servisi baslatiliyor (Pyton/app.py, N-v2)
+2026-08-04 11:06:24,866 INFO kol=focal_tversky  mod=ensemble_5fold
+2026-08-04 11:06:25,376 INFO checkpoint SHA-256 dogrulamasi: OK (5/5 eslesti)
+2026-08-04 11:06:25,376 INFO   fold0  e8a876d1a5e3eaf578601ccafced22afa3a8c027e42c11758920ae4ae5e5b554
+2026-08-04 11:06:25,376 INFO   fold1  55f10ef62fb08d26e0ed0aa70d3c382aba99699cef3fa72e90095becb3722430
+2026-08-04 11:06:25,376 INFO   fold2  8579e29654f5e9f6a3dbb4446281f2a97d1108af6a189b450c0a3c79bab6f315
+2026-08-04 11:06:25,376 INFO   fold3  fc0340b0e9014408aa9a0dc27ca3338e065fec84ba5ba0f0c634eb3cfa26a5e1
+2026-08-04 11:06:25,376 INFO   fold4  d4a5e51a8587038402f255d7fa9223a4b6db8e5177e79e9d8aa16d2595251545
+2026-08-04 11:06:25,393 INFO cihaz: cuda
+2026-08-04 11:06:25,555 INFO isinma tamamlandi: 161.8 ms
+2026-08-04 11:06:25,563 INFO tek-goruntu cikarim suresi (isinma sonrasi, 5-fold toplam): 7.4 ms
+2026-08-04 11:06:25,563 INFO ==============================================================================
+2026-08-04 11:06:42,580 INFO istek tamamlandi: dosya=13032.png sure=296.7ms lezyonAlanPx=2491 girdiKontrol=warn
+2026-08-04 11:06:42,647 INFO istek tamamlandi: dosya=12446.png sure=53.9ms lezyonAlanPx=2221 girdiKontrol=warn
+2026-08-04 11:06:42,684 INFO istek tamamlandi: dosya=10434.png sure=37.1ms lezyonAlanPx=2084 girdiKontrol=warn
+2026-08-04 11:06:42,730 INFO istek tamamlandi: dosya=10688.png sure=41.6ms lezyonAlanPx=2233 girdiKontrol=warn
+2026-08-04 11:06:42,787 INFO istek tamamlandi: dosya=12465.png sure=36.0ms lezyonAlanPx=2132 girdiKontrol=warn
+2026-08-04 11:06:42,823 INFO istek tamamlandi: dosya=10011.png sure=36.2ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 11:06:42,859 INFO istek tamamlandi: dosya=13032.png sure=36.8ms lezyonAlanPx=148 girdiKontrol=warn
+==============================================================================
+N3: duman testi baslatiliyor (2026-08-04T11:06:41)
+1) checkpoint SHA-256 (bagimsiz dogrulama): OK
+   fold0: eslesti
+   fold1: eslesti
+   fold2: eslesti
+   fold3: eslesti
+   fold4: eslesti
+   [pozitif 13032] status=200 lezyonAlanPx=2491 sure=310.4ms OK
+   [pozitif 12446] status=200 lezyonAlanPx=2221 sure=66.2ms OK
+   [pozitif 10434] status=200 lezyonAlanPx=2084 sure=37.1ms OK
+   [pozitif 10688] status=200 lezyonAlanPx=2233 sure=47.9ms OK
+   [pozitif 12465] status=200 lezyonAlanPx=2132 sure=54.3ms OK
+2) 5 bilinen pozitif OOF goruntu: OK
+3) negatif goruntu (10011): status=200 inmeVarMi=False sure=36.2ms OK
+4) kasitli OVERLAY goruntu (13032): status=200 girdiKontrol.durum=warn sebep='renkli girdi (overlay olabilir); girdi boyutu 512x512, 224x224 bekleniyor (yeniden boyutlandirildi)' sure=36.8ms OK
+4b) negatif kontrol (temiz goruntulerde 'renkli' tespiti YOK): OK
+5) bozuk dosya: status=400 sure=5.3ms OK
+6) uctan uca sure: medyan=47.9ms (n=7 istek)
+7) N2.0 temizlik dogrulamasi (SegmentasyonYap silindi, yedek mevcut, strokenext_best_model.pt referansi yok): OK
+yazildi: C:\Users\HAYRİ\PycharmProjects\StrokeDetectionDLModel\product\unet_results.json -> 'n1' anahtari
+
+N_ARM = focal_tversky   N_MODE = ensemble_5fold
+N_SHA_MATCH = t
+N_DEVICE = cuda   N_INFER_MS = 47.9
+N_SMOKE = passed
+N_FAKE_PATH_REMOVED = t
+==============================================================================
+2026-08-04 12:25:41,612 INFO istek tamamlandi: dosya=b57e0338-5331-4fda-ad54-b0f73783dbb6_10007.png sure=368.6ms lezyonAlanPx=757 girdiKontrol=warn
+2026-08-04 12:25:41,664 INFO istek tamamlandi: dosya=402c7702-02e4-470d-b505-dd7e370a3e2a_10029.png sure=36.4ms lezyonAlanPx=276 girdiKontrol=warn
+2026-08-04 12:25:41,719 INFO istek tamamlandi: dosya=45bfdfb6-0811-41d4-9924-e0a9ff601671_10189.png sure=48.9ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:25:41,763 INFO istek tamamlandi: dosya=4f69d2b2-52c4-479c-bf52-edf9a375a095_10200.png sure=43.6ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:25:41,804 INFO istek tamamlandi: dosya=3f3fc06f-5e6f-49bd-9fff-bd0b0d12ebbd_10231.png sure=40.2ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:25:41,842 INFO istek tamamlandi: dosya=0bf43c3e-e316-40bc-b616-5a333e66c231_10241.png sure=36.3ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:25:41,879 INFO istek tamamlandi: dosya=503a0f07-c7cf-4fa3-9e20-a4c952cfccb5_10267.png sure=33.6ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:25:41,920 INFO istek tamamlandi: dosya=04a36fee-dadf-4d9a-986d-a3a27ce85372_10300.png sure=36.4ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:26:17,814 INFO istek tamamlandi: dosya=b57e0338-5331-4fda-ad54-b0f73783dbb6_10007.png sure=201.1ms lezyonAlanPx=757 girdiKontrol=warn
+2026-08-04 12:26:17,850 INFO istek tamamlandi: dosya=402c7702-02e4-470d-b505-dd7e370a3e2a_10029.png sure=33.2ms lezyonAlanPx=276 girdiKontrol=warn
+2026-08-04 12:26:17,881 INFO istek tamamlandi: dosya=45bfdfb6-0811-41d4-9924-e0a9ff601671_10189.png sure=30.6ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:26:17,929 INFO istek tamamlandi: dosya=4f69d2b2-52c4-479c-bf52-edf9a375a095_10200.png sure=48.2ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:26:17,966 INFO istek tamamlandi: dosya=3f3fc06f-5e6f-49bd-9fff-bd0b0d12ebbd_10231.png sure=36.3ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:26:17,996 INFO istek tamamlandi: dosya=0bf43c3e-e316-40bc-b616-5a333e66c231_10241.png sure=30.1ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:26:18,032 INFO istek tamamlandi: dosya=503a0f07-c7cf-4fa3-9e20-a4c952cfccb5_10267.png sure=29.2ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:26:18,075 INFO istek tamamlandi: dosya=04a36fee-dadf-4d9a-986d-a3a27ce85372_10300.png sure=36.5ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:27:31,285 INFO istek tamamlandi: dosya=b7bbf546-30a5-4972-91a6-6e1dee0f7f6d_10134.png sure=241.8ms lezyonAlanPx=167 girdiKontrol=warn
+2026-08-04 12:27:31,404 INFO istek tamamlandi: dosya=19bcfd83-5e70-4f41-aef3-a95a657fb0d4_10143.png sure=116.7ms lezyonAlanPx=380 girdiKontrol=warn
+2026-08-04 12:27:31,477 INFO istek tamamlandi: dosya=736e180c-b5b3-4457-b445-77acb26bcced_10146.png sure=72.8ms lezyonAlanPx=78 girdiKontrol=warn
+2026-08-04 12:27:31,550 INFO istek tamamlandi: dosya=415d4c3f-3c5f-4b3d-b78c-1febc745ebb8_10150.png sure=67.0ms lezyonAlanPx=55 girdiKontrol=warn
+2026-08-04 12:27:31,628 INFO istek tamamlandi: dosya=c28ed36c-e280-4e89-919e-239c89fe791d_10154.png sure=72.7ms lezyonAlanPx=1074 girdiKontrol=warn
+2026-08-04 12:31:47,101 INFO istek tamamlandi: dosya=b57e0338-5331-4fda-ad54-b0f73783dbb6_10007.png sure=227.9ms lezyonAlanPx=757 girdiKontrol=warn
+2026-08-04 12:31:47,144 INFO istek tamamlandi: dosya=402c7702-02e4-470d-b505-dd7e370a3e2a_10029.png sure=35.5ms lezyonAlanPx=276 girdiKontrol=warn
+2026-08-04 12:31:47,180 INFO istek tamamlandi: dosya=45bfdfb6-0811-41d4-9924-e0a9ff601671_10189.png sure=36.3ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:31:47,224 INFO istek tamamlandi: dosya=4f69d2b2-52c4-479c-bf52-edf9a375a095_10200.png sure=41.4ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:31:47,264 INFO istek tamamlandi: dosya=3f3fc06f-5e6f-49bd-9fff-bd0b0d12ebbd_10231.png sure=36.8ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:31:47,302 INFO istek tamamlandi: dosya=0bf43c3e-e316-40bc-b616-5a333e66c231_10241.png sure=34.2ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:31:47,341 INFO istek tamamlandi: dosya=503a0f07-c7cf-4fa3-9e20-a4c952cfccb5_10267.png sure=39.5ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:31:47,379 INFO istek tamamlandi: dosya=04a36fee-dadf-4d9a-986d-a3a27ce85372_10300.png sure=35.6ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:36:16,797 INFO istek tamamlandi: dosya=b57e0338-5331-4fda-ad54-b0f73783dbb6_10007.png sure=287.3ms lezyonAlanPx=757 girdiKontrol=warn
+2026-08-04 12:36:16,862 INFO istek tamamlandi: dosya=402c7702-02e4-470d-b505-dd7e370a3e2a_10029.png sure=36.5ms lezyonAlanPx=276 girdiKontrol=warn
+2026-08-04 12:36:16,892 INFO istek tamamlandi: dosya=45bfdfb6-0811-41d4-9924-e0a9ff601671_10189.png sure=30.3ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:36:16,953 INFO istek tamamlandi: dosya=4f69d2b2-52c4-479c-bf52-edf9a375a095_10200.png sure=44.5ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:36:16,989 INFO istek tamamlandi: dosya=3f3fc06f-5e6f-49bd-9fff-bd0b0d12ebbd_10231.png sure=36.2ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:36:17,027 INFO istek tamamlandi: dosya=0bf43c3e-e316-40bc-b616-5a333e66c231_10241.png sure=38.0ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:36:17,062 INFO istek tamamlandi: dosya=503a0f07-c7cf-4fa3-9e20-a4c952cfccb5_10267.png sure=34.7ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:36:17,092 INFO istek tamamlandi: dosya=04a36fee-dadf-4d9a-986d-a3a27ce85372_10300.png sure=24.1ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:37:50,145 INFO istek tamamlandi: dosya=b57e0338-5331-4fda-ad54-b0f73783dbb6_10007.png sure=318.7ms lezyonAlanPx=757 girdiKontrol=warn
+2026-08-04 12:37:50,205 INFO istek tamamlandi: dosya=402c7702-02e4-470d-b505-dd7e370a3e2a_10029.png sure=47.5ms lezyonAlanPx=276 girdiKontrol=warn
+2026-08-04 12:37:50,236 INFO istek tamamlandi: dosya=45bfdfb6-0811-41d4-9924-e0a9ff601671_10189.png sure=29.5ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:37:50,278 INFO istek tamamlandi: dosya=4f69d2b2-52c4-479c-bf52-edf9a375a095_10200.png sure=42.5ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:37:50,308 INFO istek tamamlandi: dosya=3f3fc06f-5e6f-49bd-9fff-bd0b0d12ebbd_10231.png sure=27.5ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:37:50,351 INFO istek tamamlandi: dosya=0bf43c3e-e316-40bc-b616-5a333e66c231_10241.png sure=42.6ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:37:50,387 INFO istek tamamlandi: dosya=503a0f07-c7cf-4fa3-9e20-a4c952cfccb5_10267.png sure=36.3ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:37:50,424 INFO istek tamamlandi: dosya=04a36fee-dadf-4d9a-986d-a3a27ce85372_10300.png sure=36.3ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:40:54,687 INFO istek tamamlandi: dosya=b57e0338-5331-4fda-ad54-b0f73783dbb6_10007.png sure=318.9ms lezyonAlanPx=757 girdiKontrol=warn
+2026-08-04 12:40:54,736 INFO istek tamamlandi: dosya=402c7702-02e4-470d-b505-dd7e370a3e2a_10029.png sure=48.7ms lezyonAlanPx=276 girdiKontrol=warn
+2026-08-04 12:40:54,772 INFO istek tamamlandi: dosya=45bfdfb6-0811-41d4-9924-e0a9ff601671_10189.png sure=36.3ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:40:54,808 INFO istek tamamlandi: dosya=4f69d2b2-52c4-479c-bf52-edf9a375a095_10200.png sure=36.1ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:40:54,856 INFO istek tamamlandi: dosya=3f3fc06f-5e6f-49bd-9fff-bd0b0d12ebbd_10231.png sure=38.7ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:40:54,896 INFO istek tamamlandi: dosya=0bf43c3e-e316-40bc-b616-5a333e66c231_10241.png sure=38.4ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:40:54,935 INFO istek tamamlandi: dosya=503a0f07-c7cf-4fa3-9e20-a4c952cfccb5_10267.png sure=37.1ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:40:54,978 INFO istek tamamlandi: dosya=04a36fee-dadf-4d9a-986d-a3a27ce85372_10300.png sure=41.8ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:41:36,511 INFO istek tamamlandi: dosya=b7bbf546-30a5-4972-91a6-6e1dee0f7f6d_10134.png sure=276.4ms lezyonAlanPx=167 girdiKontrol=warn
+2026-08-04 12:41:36,569 INFO istek tamamlandi: dosya=19bcfd83-5e70-4f41-aef3-a95a657fb0d4_10143.png sure=54.8ms lezyonAlanPx=380 girdiKontrol=warn
+2026-08-04 12:41:36,630 INFO istek tamamlandi: dosya=736e180c-b5b3-4457-b445-77acb26bcced_10146.png sure=48.3ms lezyonAlanPx=78 girdiKontrol=warn
+2026-08-04 12:41:36,672 INFO istek tamamlandi: dosya=415d4c3f-3c5f-4b3d-b78c-1febc745ebb8_10150.png sure=38.1ms lezyonAlanPx=55 girdiKontrol=warn
+2026-08-04 12:41:36,718 INFO istek tamamlandi: dosya=c28ed36c-e280-4e89-919e-239c89fe791d_10154.png sure=42.7ms lezyonAlanPx=1074 girdiKontrol=warn
+2026-08-04 12:43:03,484 INFO istek tamamlandi: dosya=b8aea3b5-e084-4730-aeab-45baca01ab2e_WhatsApp Image 2026-07-30 at 10.18.58 (1).jpeg sure=217.5ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:43:03,544 INFO istek tamamlandi: dosya=66bf25e1-9382-4834-9893-75b334351584_WhatsApp Image 2026-07-30 at 10.18.58.jpeg sure=54.1ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:43:03,590 INFO istek tamamlandi: dosya=8ff3c14e-a7ee-472e-80bb-4c060e6c493d_WhatsApp Image 2026-07-30 at 10.18.59 (1).jpeg sure=39.6ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:43:03,630 INFO istek tamamlandi: dosya=cb22ba42-0cdd-4ecf-a41e-bb634645f2f7_WhatsApp Image 2026-07-30 at 10.18.59 (10).jpeg sure=36.4ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:43:03,668 INFO istek tamamlandi: dosya=24a4398e-9e59-4f0d-aa2f-d3b6d53614e0_WhatsApp Image 2026-07-30 at 10.18.59 (11).jpeg sure=36.7ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:43:03,709 INFO istek tamamlandi: dosya=d57c4e6a-5d10-47e8-95d5-da545f71a526_WhatsApp Image 2026-07-30 at 10.18.59 (2).jpeg sure=36.7ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:43:03,751 INFO istek tamamlandi: dosya=03093f8e-cd11-4bda-a15d-e30dd44f0e7f_WhatsApp Image 2026-07-30 at 10.18.59 (3).jpeg sure=40.1ms lezyonAlanPx=35 girdiKontrol=warn
+2026-08-04 12:43:03,788 INFO istek tamamlandi: dosya=94e646f1-b65f-448c-b147-26a49d96fe3c_WhatsApp Image 2026-07-30 at 10.18.59 (4).jpeg sure=34.0ms lezyonAlanPx=27 girdiKontrol=warn
+2026-08-04 12:43:03,825 INFO istek tamamlandi: dosya=1b99bd19-6333-4281-a090-7de96549d672_WhatsApp Image 2026-07-30 at 10.18.59 (5).jpeg sure=36.4ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:43:03,896 INFO istek tamamlandi: dosya=a09b1b5a-92e8-4203-8a55-27a66458d856_WhatsApp Image 2026-07-30 at 10.18.59 (6).jpeg sure=63.3ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:43:03,945 INFO istek tamamlandi: dosya=1d13f8a9-8b8c-4b8a-a0ec-167a4a466859_WhatsApp Image 2026-07-30 at 10.18.59 (7).jpeg sure=44.8ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:43:03,988 INFO istek tamamlandi: dosya=8f20f51a-c848-46a9-ad46-63e58eefcee8_WhatsApp Image 2026-07-30 at 10.18.59 (8).jpeg sure=41.0ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:43:04,026 INFO istek tamamlandi: dosya=b99d5f67-73cb-4119-a80f-a87978c242f3_WhatsApp Image 2026-07-30 at 10.18.59 (9).jpeg sure=36.3ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:43:04,073 INFO istek tamamlandi: dosya=e4f3ba8a-2249-4992-a4ac-81cfc06f9be1_WhatsApp Image 2026-07-30 at 10.18.59.jpeg sure=42.5ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:43:05,629 INFO istek tamamlandi: dosya=b8aea3b5-e084-4730-aeab-45baca01ab2e_WhatsApp Image 2026-07-30 at 10.18.58 (1).jpeg sure=47.4ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:43:05,671 INFO istek tamamlandi: dosya=66bf25e1-9382-4834-9893-75b334351584_WhatsApp Image 2026-07-30 at 10.18.58.jpeg sure=41.5ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:43:05,715 INFO istek tamamlandi: dosya=8ff3c14e-a7ee-472e-80bb-4c060e6c493d_WhatsApp Image 2026-07-30 at 10.18.59 (1).jpeg sure=41.5ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:43:05,750 INFO istek tamamlandi: dosya=cb22ba42-0cdd-4ecf-a41e-bb634645f2f7_WhatsApp Image 2026-07-30 at 10.18.59 (10).jpeg sure=35.7ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:43:05,787 INFO istek tamamlandi: dosya=24a4398e-9e59-4f0d-aa2f-d3b6d53614e0_WhatsApp Image 2026-07-30 at 10.18.59 (11).jpeg sure=36.0ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:43:05,823 INFO istek tamamlandi: dosya=d57c4e6a-5d10-47e8-95d5-da545f71a526_WhatsApp Image 2026-07-30 at 10.18.59 (2).jpeg sure=36.4ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:43:05,865 INFO istek tamamlandi: dosya=03093f8e-cd11-4bda-a15d-e30dd44f0e7f_WhatsApp Image 2026-07-30 at 10.18.59 (3).jpeg sure=42.0ms lezyonAlanPx=35 girdiKontrol=warn
+2026-08-04 12:43:05,902 INFO istek tamamlandi: dosya=94e646f1-b65f-448c-b147-26a49d96fe3c_WhatsApp Image 2026-07-30 at 10.18.59 (4).jpeg sure=33.1ms lezyonAlanPx=27 girdiKontrol=warn
+2026-08-04 12:43:05,949 INFO istek tamamlandi: dosya=1b99bd19-6333-4281-a090-7de96549d672_WhatsApp Image 2026-07-30 at 10.18.59 (5).jpeg sure=35.7ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:43:05,985 INFO istek tamamlandi: dosya=a09b1b5a-92e8-4203-8a55-27a66458d856_WhatsApp Image 2026-07-30 at 10.18.59 (6).jpeg sure=34.2ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:43:06,011 INFO istek tamamlandi: dosya=1d13f8a9-8b8c-4b8a-a0ec-167a4a466859_WhatsApp Image 2026-07-30 at 10.18.59 (7).jpeg sure=23.0ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:43:06,059 INFO istek tamamlandi: dosya=8f20f51a-c848-46a9-ad46-63e58eefcee8_WhatsApp Image 2026-07-30 at 10.18.59 (8).jpeg sure=36.2ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:43:06,096 INFO istek tamamlandi: dosya=b99d5f67-73cb-4119-a80f-a87978c242f3_WhatsApp Image 2026-07-30 at 10.18.59 (9).jpeg sure=34.3ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:43:06,142 INFO istek tamamlandi: dosya=e4f3ba8a-2249-4992-a4ac-81cfc06f9be1_WhatsApp Image 2026-07-30 at 10.18.59.jpeg sure=43.4ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:43:08,781 INFO istek tamamlandi: dosya=b8aea3b5-e084-4730-aeab-45baca01ab2e_WhatsApp Image 2026-07-30 at 10.18.58 (1).jpeg sure=78.6ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:43:08,859 INFO istek tamamlandi: dosya=66bf25e1-9382-4834-9893-75b334351584_WhatsApp Image 2026-07-30 at 10.18.58.jpeg sure=77.0ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:43:08,914 INFO istek tamamlandi: dosya=8ff3c14e-a7ee-472e-80bb-4c060e6c493d_WhatsApp Image 2026-07-30 at 10.18.59 (1).jpeg sure=49.3ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:43:08,975 INFO istek tamamlandi: dosya=cb22ba42-0cdd-4ecf-a41e-bb634645f2f7_WhatsApp Image 2026-07-30 at 10.18.59 (10).jpeg sure=55.3ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:43:09,028 INFO istek tamamlandi: dosya=24a4398e-9e59-4f0d-aa2f-d3b6d53614e0_WhatsApp Image 2026-07-30 at 10.18.59 (11).jpeg sure=51.0ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:43:09,080 INFO istek tamamlandi: dosya=d57c4e6a-5d10-47e8-95d5-da545f71a526_WhatsApp Image 2026-07-30 at 10.18.59 (2).jpeg sure=51.4ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:43:09,123 INFO istek tamamlandi: dosya=03093f8e-cd11-4bda-a15d-e30dd44f0e7f_WhatsApp Image 2026-07-30 at 10.18.59 (3).jpeg sure=40.8ms lezyonAlanPx=35 girdiKontrol=warn
+2026-08-04 12:43:09,163 INFO istek tamamlandi: dosya=94e646f1-b65f-448c-b147-26a49d96fe3c_WhatsApp Image 2026-07-30 at 10.18.59 (4).jpeg sure=38.9ms lezyonAlanPx=27 girdiKontrol=warn
+2026-08-04 12:43:09,204 INFO istek tamamlandi: dosya=1b99bd19-6333-4281-a090-7de96549d672_WhatsApp Image 2026-07-30 at 10.18.59 (5).jpeg sure=40.8ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:43:09,249 INFO istek tamamlandi: dosya=a09b1b5a-92e8-4203-8a55-27a66458d856_WhatsApp Image 2026-07-30 at 10.18.59 (6).jpeg sure=44.3ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:43:09,289 INFO istek tamamlandi: dosya=1d13f8a9-8b8c-4b8a-a0ec-167a4a466859_WhatsApp Image 2026-07-30 at 10.18.59 (7).jpeg sure=38.3ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:43:09,325 INFO istek tamamlandi: dosya=8f20f51a-c848-46a9-ad46-63e58eefcee8_WhatsApp Image 2026-07-30 at 10.18.59 (8).jpeg sure=34.3ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:43:09,363 INFO istek tamamlandi: dosya=b99d5f67-73cb-4119-a80f-a87978c242f3_WhatsApp Image 2026-07-30 at 10.18.59 (9).jpeg sure=36.1ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:43:09,398 INFO istek tamamlandi: dosya=e4f3ba8a-2249-4992-a4ac-81cfc06f9be1_WhatsApp Image 2026-07-30 at 10.18.59.jpeg sure=33.5ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:43:17,076 INFO istek tamamlandi: dosya=b8aea3b5-e084-4730-aeab-45baca01ab2e_WhatsApp Image 2026-07-30 at 10.18.58 (1).jpeg sure=254.7ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:43:17,118 INFO istek tamamlandi: dosya=66bf25e1-9382-4834-9893-75b334351584_WhatsApp Image 2026-07-30 at 10.18.58.jpeg sure=36.0ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:43:17,154 INFO istek tamamlandi: dosya=8ff3c14e-a7ee-472e-80bb-4c060e6c493d_WhatsApp Image 2026-07-30 at 10.18.59 (1).jpeg sure=35.9ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:43:17,210 INFO istek tamamlandi: dosya=cb22ba42-0cdd-4ecf-a41e-bb634645f2f7_WhatsApp Image 2026-07-30 at 10.18.59 (10).jpeg sure=55.3ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:43:17,264 INFO istek tamamlandi: dosya=24a4398e-9e59-4f0d-aa2f-d3b6d53614e0_WhatsApp Image 2026-07-30 at 10.18.59 (11).jpeg sure=47.6ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:43:17,306 INFO istek tamamlandi: dosya=d57c4e6a-5d10-47e8-95d5-da545f71a526_WhatsApp Image 2026-07-30 at 10.18.59 (2).jpeg sure=42.0ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:43:17,348 INFO istek tamamlandi: dosya=03093f8e-cd11-4bda-a15d-e30dd44f0e7f_WhatsApp Image 2026-07-30 at 10.18.59 (3).jpeg sure=42.3ms lezyonAlanPx=35 girdiKontrol=warn
+2026-08-04 12:43:17,384 INFO istek tamamlandi: dosya=94e646f1-b65f-448c-b147-26a49d96fe3c_WhatsApp Image 2026-07-30 at 10.18.59 (4).jpeg sure=35.9ms lezyonAlanPx=27 girdiKontrol=warn
+2026-08-04 12:43:17,414 INFO istek tamamlandi: dosya=1b99bd19-6333-4281-a090-7de96549d672_WhatsApp Image 2026-07-30 at 10.18.59 (5).jpeg sure=29.5ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:43:17,463 INFO istek tamamlandi: dosya=a09b1b5a-92e8-4203-8a55-27a66458d856_WhatsApp Image 2026-07-30 at 10.18.59 (6).jpeg sure=48.9ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:43:17,501 INFO istek tamamlandi: dosya=1d13f8a9-8b8c-4b8a-a0ec-167a4a466859_WhatsApp Image 2026-07-30 at 10.18.59 (7).jpeg sure=35.1ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:43:17,537 INFO istek tamamlandi: dosya=8f20f51a-c848-46a9-ad46-63e58eefcee8_WhatsApp Image 2026-07-30 at 10.18.59 (8).jpeg sure=33.8ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:43:17,572 INFO istek tamamlandi: dosya=b99d5f67-73cb-4119-a80f-a87978c242f3_WhatsApp Image 2026-07-30 at 10.18.59 (9).jpeg sure=31.8ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 12:43:17,608 INFO istek tamamlandi: dosya=e4f3ba8a-2249-4992-a4ac-81cfc06f9be1_WhatsApp Image 2026-07-30 at 10.18.59.jpeg sure=36.3ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 13:55:19,507 INFO ==============================================================================
+2026-08-04 13:55:19,507 INFO N2: BTİNME cikarim servisi baslatiliyor (Pyton/app.py, N-v2)
+2026-08-04 13:55:19,524 INFO kol=focal_tversky  mod=ensemble_5fold
+2026-08-04 13:55:19,984 INFO checkpoint SHA-256 dogrulamasi: OK (5/5 eslesti)
+2026-08-04 13:55:19,984 INFO   fold0  e8a876d1a5e3eaf578601ccafced22afa3a8c027e42c11758920ae4ae5e5b554
+2026-08-04 13:55:19,984 INFO   fold1  55f10ef62fb08d26e0ed0aa70d3c382aba99699cef3fa72e90095becb3722430
+2026-08-04 13:55:19,984 INFO   fold2  8579e29654f5e9f6a3dbb4446281f2a97d1108af6a189b450c0a3c79bab6f315
+2026-08-04 13:55:19,984 INFO   fold3  fc0340b0e9014408aa9a0dc27ca3338e065fec84ba5ba0f0c634eb3cfa26a5e1
+2026-08-04 13:55:19,984 INFO   fold4  d4a5e51a8587038402f255d7fa9223a4b6db8e5177e79e9d8aa16d2595251545
+2026-08-04 13:55:19,984 INFO cihaz: cuda
+2026-08-04 13:55:20,127 INFO isinma tamamlandi: 142.9 ms
+2026-08-04 13:55:20,127 INFO tek-goruntu cikarim suresi (isinma sonrasi, 5-fold toplam): 0.0 ms
+2026-08-04 13:55:20,140 INFO ==============================================================================
+2026-08-04 14:52:33,851 INFO ==============================================================================
+2026-08-04 14:52:33,851 INFO N2: BTİNME cikarim servisi baslatiliyor (Pyton/app.py, N-v2)
+2026-08-04 14:52:33,851 INFO kol=focal_tversky  mod=ensemble_5fold
+2026-08-04 14:52:34,516 INFO checkpoint SHA-256 dogrulamasi: OK (5/5 eslesti)
+2026-08-04 14:52:34,516 INFO   fold0  e8a876d1a5e3eaf578601ccafced22afa3a8c027e42c11758920ae4ae5e5b554
+2026-08-04 14:52:34,516 INFO   fold1  55f10ef62fb08d26e0ed0aa70d3c382aba99699cef3fa72e90095becb3722430
+2026-08-04 14:52:34,516 INFO   fold2  8579e29654f5e9f6a3dbb4446281f2a97d1108af6a189b450c0a3c79bab6f315
+2026-08-04 14:52:34,516 INFO   fold3  fc0340b0e9014408aa9a0dc27ca3338e065fec84ba5ba0f0c634eb3cfa26a5e1
+2026-08-04 14:52:34,516 INFO   fold4  d4a5e51a8587038402f255d7fa9223a4b6db8e5177e79e9d8aa16d2595251545
+2026-08-04 14:52:34,516 INFO cihaz: cuda
+2026-08-04 14:52:34,943 INFO isinma tamamlandi: 426.9 ms
+2026-08-04 14:52:34,943 INFO tek-goruntu cikarim suresi (isinma sonrasi, 5-fold toplam): 0.0 ms
+2026-08-04 14:52:34,943 INFO ==============================================================================
+2026-08-04 21:59:42,049 INFO ==============================================================================
+2026-08-04 21:59:42,058 INFO N2: BTİNME cikarim servisi baslatiliyor (Pyton/app.py, N-v2)
+2026-08-04 21:59:42,058 INFO kol=focal_tversky  mod=ensemble_5fold
+2026-08-04 21:59:43,065 INFO checkpoint SHA-256 dogrulamasi: OK (5/5 eslesti)
+2026-08-04 21:59:43,065 INFO   fold0  e8a876d1a5e3eaf578601ccafced22afa3a8c027e42c11758920ae4ae5e5b554
+2026-08-04 21:59:43,065 INFO   fold1  55f10ef62fb08d26e0ed0aa70d3c382aba99699cef3fa72e90095becb3722430
+2026-08-04 21:59:43,065 INFO   fold2  8579e29654f5e9f6a3dbb4446281f2a97d1108af6a189b450c0a3c79bab6f315
+2026-08-04 21:59:43,065 INFO   fold3  fc0340b0e9014408aa9a0dc27ca3338e065fec84ba5ba0f0c634eb3cfa26a5e1
+2026-08-04 21:59:43,065 INFO   fold4  d4a5e51a8587038402f255d7fa9223a4b6db8e5177e79e9d8aa16d2595251545
+2026-08-04 21:59:43,065 INFO cihaz: cuda
+2026-08-04 21:59:43,419 INFO isinma tamamlandi: 354.3 ms
+2026-08-04 21:59:43,427 INFO tek-goruntu cikarim suresi (isinma sonrasi, 5-fold toplam): 7.4 ms
+2026-08-04 21:59:43,427 INFO ==============================================================================
+2026-08-04 22:01:43,839 INFO istek tamamlandi: dosya=b8aea3b5-e084-4730-aeab-45baca01ab2e_WhatsApp Image 2026-07-30 at 10.18.58 (1).jpeg sure=319.6ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 22:01:43,939 INFO istek tamamlandi: dosya=66bf25e1-9382-4834-9893-75b334351584_WhatsApp Image 2026-07-30 at 10.18.58.jpeg sure=49.3ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 22:01:43,986 INFO istek tamamlandi: dosya=8ff3c14e-a7ee-472e-80bb-4c060e6c493d_WhatsApp Image 2026-07-30 at 10.18.59 (1).jpeg sure=39.8ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 22:01:44,036 INFO istek tamamlandi: dosya=cb22ba42-0cdd-4ecf-a41e-bb634645f2f7_WhatsApp Image 2026-07-30 at 10.18.59 (10).jpeg sure=42.7ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 22:01:44,082 INFO istek tamamlandi: dosya=24a4398e-9e59-4f0d-aa2f-d3b6d53614e0_WhatsApp Image 2026-07-30 at 10.18.59 (11).jpeg sure=41.3ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 22:01:44,129 INFO istek tamamlandi: dosya=d57c4e6a-5d10-47e8-95d5-da545f71a526_WhatsApp Image 2026-07-30 at 10.18.59 (2).jpeg sure=42.5ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 22:01:44,180 INFO istek tamamlandi: dosya=03093f8e-cd11-4bda-a15d-e30dd44f0e7f_WhatsApp Image 2026-07-30 at 10.18.59 (3).jpeg sure=50.0ms lezyonAlanPx=35 girdiKontrol=warn
+2026-08-04 22:01:44,224 INFO istek tamamlandi: dosya=94e646f1-b65f-448c-b147-26a49d96fe3c_WhatsApp Image 2026-07-30 at 10.18.59 (4).jpeg sure=37.0ms lezyonAlanPx=27 girdiKontrol=warn
+2026-08-04 22:01:44,284 INFO istek tamamlandi: dosya=1b99bd19-6333-4281-a090-7de96549d672_WhatsApp Image 2026-07-30 at 10.18.59 (5).jpeg sure=49.7ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 22:01:44,339 INFO istek tamamlandi: dosya=a09b1b5a-92e8-4203-8a55-27a66458d856_WhatsApp Image 2026-07-30 at 10.18.59 (6).jpeg sure=48.9ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 22:01:44,398 INFO istek tamamlandi: dosya=1d13f8a9-8b8c-4b8a-a0ec-167a4a466859_WhatsApp Image 2026-07-30 at 10.18.59 (7).jpeg sure=58.6ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 22:01:44,447 INFO istek tamamlandi: dosya=8f20f51a-c848-46a9-ad46-63e58eefcee8_WhatsApp Image 2026-07-30 at 10.18.59 (8).jpeg sure=42.4ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 22:01:44,520 INFO istek tamamlandi: dosya=b99d5f67-73cb-4119-a80f-a87978c242f3_WhatsApp Image 2026-07-30 at 10.18.59 (9).jpeg sure=64.6ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 22:01:44,586 INFO istek tamamlandi: dosya=e4f3ba8a-2249-4992-a4ac-81cfc06f9be1_WhatsApp Image 2026-07-30 at 10.18.59.jpeg sure=56.0ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 22:01:46,703 INFO istek tamamlandi: dosya=b8aea3b5-e084-4730-aeab-45baca01ab2e_WhatsApp Image 2026-07-30 at 10.18.58 (1).jpeg sure=78.6ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 22:01:46,780 INFO istek tamamlandi: dosya=66bf25e1-9382-4834-9893-75b334351584_WhatsApp Image 2026-07-30 at 10.18.58.jpeg sure=71.8ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 22:01:46,847 INFO istek tamamlandi: dosya=8ff3c14e-a7ee-472e-80bb-4c060e6c493d_WhatsApp Image 2026-07-30 at 10.18.59 (1).jpeg sure=67.2ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 22:01:46,911 INFO istek tamamlandi: dosya=cb22ba42-0cdd-4ecf-a41e-bb634645f2f7_WhatsApp Image 2026-07-30 at 10.18.59 (10).jpeg sure=57.8ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 22:01:46,976 INFO istek tamamlandi: dosya=24a4398e-9e59-4f0d-aa2f-d3b6d53614e0_WhatsApp Image 2026-07-30 at 10.18.59 (11).jpeg sure=62.1ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 22:01:47,029 INFO istek tamamlandi: dosya=d57c4e6a-5d10-47e8-95d5-da545f71a526_WhatsApp Image 2026-07-30 at 10.18.59 (2).jpeg sure=50.1ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 22:01:47,083 INFO istek tamamlandi: dosya=03093f8e-cd11-4bda-a15d-e30dd44f0e7f_WhatsApp Image 2026-07-30 at 10.18.59 (3).jpeg sure=53.6ms lezyonAlanPx=35 girdiKontrol=warn
+2026-08-04 22:01:47,135 INFO istek tamamlandi: dosya=94e646f1-b65f-448c-b147-26a49d96fe3c_WhatsApp Image 2026-07-30 at 10.18.59 (4).jpeg sure=49.0ms lezyonAlanPx=27 girdiKontrol=warn
+2026-08-04 22:01:47,208 INFO istek tamamlandi: dosya=1b99bd19-6333-4281-a090-7de96549d672_WhatsApp Image 2026-07-30 at 10.18.59 (5).jpeg sure=69.7ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 22:01:47,268 INFO istek tamamlandi: dosya=a09b1b5a-92e8-4203-8a55-27a66458d856_WhatsApp Image 2026-07-30 at 10.18.59 (6).jpeg sure=56.6ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 22:01:47,314 INFO istek tamamlandi: dosya=1d13f8a9-8b8c-4b8a-a0ec-167a4a466859_WhatsApp Image 2026-07-30 at 10.18.59 (7).jpeg sure=43.3ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 22:01:47,366 INFO istek tamamlandi: dosya=8f20f51a-c848-46a9-ad46-63e58eefcee8_WhatsApp Image 2026-07-30 at 10.18.59 (8).jpeg sure=52.0ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 22:01:47,416 INFO istek tamamlandi: dosya=b99d5f67-73cb-4119-a80f-a87978c242f3_WhatsApp Image 2026-07-30 at 10.18.59 (9).jpeg sure=47.3ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-04 22:01:47,463 INFO istek tamamlandi: dosya=e4f3ba8a-2249-4992-a4ac-81cfc06f9be1_WhatsApp Image 2026-07-30 at 10.18.59.jpeg sure=47.5ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-05 09:50:56,982 INFO ==============================================================================
+2026-08-05 09:50:56,982 INFO N2: BTİNME cikarim servisi baslatiliyor (Pyton/app.py, N-v2)
+2026-08-05 09:50:56,982 INFO kol=focal_tversky  mod=ensemble_5fold
+2026-08-05 09:50:58,024 INFO checkpoint SHA-256 dogrulamasi: OK (5/5 eslesti)
+2026-08-05 09:50:58,024 INFO   fold0  e8a876d1a5e3eaf578601ccafced22afa3a8c027e42c11758920ae4ae5e5b554
+2026-08-05 09:50:58,024 INFO   fold1  55f10ef62fb08d26e0ed0aa70d3c382aba99699cef3fa72e90095becb3722430
+2026-08-05 09:50:58,024 INFO   fold2  8579e29654f5e9f6a3dbb4446281f2a97d1108af6a189b450c0a3c79bab6f315
+2026-08-05 09:50:58,024 INFO   fold3  fc0340b0e9014408aa9a0dc27ca3338e065fec84ba5ba0f0c634eb3cfa26a5e1
+2026-08-05 09:50:58,024 INFO   fold4  d4a5e51a8587038402f255d7fa9223a4b6db8e5177e79e9d8aa16d2595251545
+2026-08-05 09:50:58,024 INFO cihaz: cuda
+2026-08-05 09:50:58,503 INFO isinma tamamlandi: 479.1 ms
+2026-08-05 09:50:58,503 INFO tek-goruntu cikarim suresi (isinma sonrasi, 5-fold toplam): 0.0 ms
+2026-08-05 09:50:58,503 INFO ==============================================================================
+2026-08-05 09:52:55,802 INFO istek tamamlandi: dosya=7e230e8c-4194-4cd1-abab-e050df9bdffb_10110.png sure=834.1ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-05 09:52:56,117 INFO istek tamamlandi: dosya=02d68395-2469-48a2-b6f5-b79f28ce0f50_10147.png sure=227.2ms lezyonAlanPx=307 girdiKontrol=warn
+2026-08-05 09:52:56,344 INFO istek tamamlandi: dosya=d3701416-bfee-4b72-9949-4a766c77ae22_10192.png sure=159.8ms lezyonAlanPx=946 girdiKontrol=warn
+2026-08-05 09:52:56,548 INFO istek tamamlandi: dosya=6fd16a2f-7c87-4f81-91ba-bfdeda4da31c_10432.png sure=180.7ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-05 09:52:56,712 INFO istek tamamlandi: dosya=62d5e863-3fe7-40ef-a04a-a06996648f8d_10560.png sure=155.3ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-05 09:52:56,866 INFO istek tamamlandi: dosya=49e31813-27d1-4b7a-8a7e-9099b6adc459_10583.png sure=145.4ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-05 09:52:57,019 INFO istek tamamlandi: dosya=48070ee6-b7b3-450e-8a68-9c3055272c2f_10020.png sure=145.3ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-05 09:52:57,173 INFO istek tamamlandi: dosya=a3df182d-05fe-43e2-a7fe-ddf862ff0010_10064.png sure=139.3ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-05 10:02:17,599 INFO istek tamamlandi: dosya=7e230e8c-4194-4cd1-abab-e050df9bdffb_10110.png sure=270.8ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-05 10:02:17,831 INFO istek tamamlandi: dosya=02d68395-2469-48a2-b6f5-b79f28ce0f50_10147.png sure=212.3ms lezyonAlanPx=307 girdiKontrol=warn
+2026-08-05 10:02:17,976 INFO istek tamamlandi: dosya=d3701416-bfee-4b72-9949-4a766c77ae22_10192.png sure=130.0ms lezyonAlanPx=946 girdiKontrol=warn
+2026-08-05 10:02:18,106 INFO istek tamamlandi: dosya=6fd16a2f-7c87-4f81-91ba-bfdeda4da31c_10432.png sure=121.0ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-05 10:02:18,250 INFO istek tamamlandi: dosya=62d5e863-3fe7-40ef-a04a-a06996648f8d_10560.png sure=124.2ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-05 10:02:18,374 INFO istek tamamlandi: dosya=49e31813-27d1-4b7a-8a7e-9099b6adc459_10583.png sure=115.7ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-05 10:02:18,505 INFO istek tamamlandi: dosya=48070ee6-b7b3-450e-8a68-9c3055272c2f_10020.png sure=120.5ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-05 10:02:18,631 INFO istek tamamlandi: dosya=a3df182d-05fe-43e2-a7fe-ddf862ff0010_10064.png sure=106.8ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-05 10:07:14,942 INFO istek tamamlandi: dosya=592bc429-9ddf-4be5-b9e4-5a2388dd7774_10494.png sure=275.0ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-05 10:07:15,136 INFO istek tamamlandi: dosya=61268496-c947-432c-94a5-1b93c366814d_10641.png sure=185.3ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-05 10:07:15,311 INFO istek tamamlandi: dosya=14b9f5ab-60c3-4da9-ad2f-76ef73e478d4_10693.png sure=151.4ms lezyonAlanPx=10 girdiKontrol=warn
+2026-08-05 10:07:15,468 INFO istek tamamlandi: dosya=e9bd697e-320b-4640-8cd3-cd0896ab6b6b_10785.png sure=151.3ms lezyonAlanPx=54 girdiKontrol=warn
+2026-08-05 10:07:15,604 INFO istek tamamlandi: dosya=dffde8c5-d20d-4442-87a8-83de539043d0_10833.png sure=128.9ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-05 10:07:15,737 INFO istek tamamlandi: dosya=36b8dca9-603a-4000-9d14-47d32959e663_10360.png sure=123.9ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-05 10:07:15,881 INFO istek tamamlandi: dosya=fe9d4e4f-e5ec-45db-92a4-a2484a2844e1_10437.png sure=134.7ms lezyonAlanPx=387 girdiKontrol=warn
+2026-08-05 10:07:16,024 INFO istek tamamlandi: dosya=6f584138-2429-4c47-bab8-118b111e8a5d_10461.png sure=139.8ms lezyonAlanPx=94 girdiKontrol=warn
+2026-08-05 10:07:16,160 INFO istek tamamlandi: dosya=d1797a3c-10cb-4e96-a7eb-8216a49b38e7_10467.png sure=127.1ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-05 10:07:16,298 INFO istek tamamlandi: dosya=d84a11f8-b44b-4286-95d1-8fbc43da0186_10493.png sure=125.1ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-05 10:23:05,981 INFO istek tamamlandi: dosya=b8aea3b5-e084-4730-aeab-45baca01ab2e_WhatsApp Image 2026-07-30 at 10.18.58 (1).jpeg sure=934.0ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-05 10:23:06,241 INFO istek tamamlandi: dosya=66bf25e1-9382-4834-9893-75b334351584_WhatsApp Image 2026-07-30 at 10.18.58.jpeg sure=242.3ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-05 10:23:06,369 INFO istek tamamlandi: dosya=8ff3c14e-a7ee-472e-80bb-4c060e6c493d_WhatsApp Image 2026-07-30 at 10.18.59 (1).jpeg sure=115.5ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-05 10:23:06,505 INFO istek tamamlandi: dosya=cb22ba42-0cdd-4ecf-a41e-bb634645f2f7_WhatsApp Image 2026-07-30 at 10.18.59 (10).jpeg sure=123.7ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-05 10:23:06,637 INFO istek tamamlandi: dosya=24a4398e-9e59-4f0d-aa2f-d3b6d53614e0_WhatsApp Image 2026-07-30 at 10.18.59 (11).jpeg sure=123.1ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-05 10:23:06,768 INFO istek tamamlandi: dosya=d57c4e6a-5d10-47e8-95d5-da545f71a526_WhatsApp Image 2026-07-30 at 10.18.59 (2).jpeg sure=120.6ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-05 10:23:06,909 INFO istek tamamlandi: dosya=03093f8e-cd11-4bda-a15d-e30dd44f0e7f_WhatsApp Image 2026-07-30 at 10.18.59 (3).jpeg sure=132.4ms lezyonAlanPx=35 girdiKontrol=warn
+2026-08-05 10:23:07,030 INFO istek tamamlandi: dosya=94e646f1-b65f-448c-b147-26a49d96fe3c_WhatsApp Image 2026-07-30 at 10.18.59 (4).jpeg sure=110.1ms lezyonAlanPx=27 girdiKontrol=warn
+2026-08-05 10:23:07,167 INFO istek tamamlandi: dosya=1b99bd19-6333-4281-a090-7de96549d672_WhatsApp Image 2026-07-30 at 10.18.59 (5).jpeg sure=113.7ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-05 10:23:07,303 INFO istek tamamlandi: dosya=a09b1b5a-92e8-4203-8a55-27a66458d856_WhatsApp Image 2026-07-30 at 10.18.59 (6).jpeg sure=136.8ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-05 10:23:07,431 INFO istek tamamlandi: dosya=1d13f8a9-8b8c-4b8a-a0ec-167a4a466859_WhatsApp Image 2026-07-30 at 10.18.59 (7).jpeg sure=117.0ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-05 10:23:07,562 INFO istek tamamlandi: dosya=8f20f51a-c848-46a9-ad46-63e58eefcee8_WhatsApp Image 2026-07-30 at 10.18.59 (8).jpeg sure=115.4ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-05 10:23:07,686 INFO istek tamamlandi: dosya=b99d5f67-73cb-4119-a80f-a87978c242f3_WhatsApp Image 2026-07-30 at 10.18.59 (9).jpeg sure=118.1ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-05 10:23:07,819 INFO istek tamamlandi: dosya=e4f3ba8a-2249-4992-a4ac-81cfc06f9be1_WhatsApp Image 2026-07-30 at 10.18.59.jpeg sure=123.8ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-05 10:24:30,540 INFO istek tamamlandi: dosya=b8aea3b5-e084-4730-aeab-45baca01ab2e_WhatsApp Image 2026-07-30 at 10.18.58 (1).jpeg sure=274.9ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-05 10:24:30,665 INFO istek tamamlandi: dosya=66bf25e1-9382-4834-9893-75b334351584_WhatsApp Image 2026-07-30 at 10.18.58.jpeg sure=115.0ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-05 10:24:30,790 INFO istek tamamlandi: dosya=8ff3c14e-a7ee-472e-80bb-4c060e6c493d_WhatsApp Image 2026-07-30 at 10.18.59 (1).jpeg sure=121.7ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-05 10:24:30,919 INFO istek tamamlandi: dosya=cb22ba42-0cdd-4ecf-a41e-bb634645f2f7_WhatsApp Image 2026-07-30 at 10.18.59 (10).jpeg sure=118.5ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-05 10:24:31,052 INFO istek tamamlandi: dosya=24a4398e-9e59-4f0d-aa2f-d3b6d53614e0_WhatsApp Image 2026-07-30 at 10.18.59 (11).jpeg sure=120.5ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-05 10:24:31,168 INFO istek tamamlandi: dosya=d57c4e6a-5d10-47e8-95d5-da545f71a526_WhatsApp Image 2026-07-30 at 10.18.59 (2).jpeg sure=106.6ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-05 10:24:31,314 INFO istek tamamlandi: dosya=03093f8e-cd11-4bda-a15d-e30dd44f0e7f_WhatsApp Image 2026-07-30 at 10.18.59 (3).jpeg sure=127.5ms lezyonAlanPx=35 girdiKontrol=warn
+2026-08-05 10:24:31,443 INFO istek tamamlandi: dosya=94e646f1-b65f-448c-b147-26a49d96fe3c_WhatsApp Image 2026-07-30 at 10.18.59 (4).jpeg sure=127.7ms lezyonAlanPx=27 girdiKontrol=warn
+2026-08-05 10:24:31,568 INFO istek tamamlandi: dosya=1b99bd19-6333-4281-a090-7de96549d672_WhatsApp Image 2026-07-30 at 10.18.59 (5).jpeg sure=116.4ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-05 10:24:31,708 INFO istek tamamlandi: dosya=a09b1b5a-92e8-4203-8a55-27a66458d856_WhatsApp Image 2026-07-30 at 10.18.59 (6).jpeg sure=128.9ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-05 10:24:31,836 INFO istek tamamlandi: dosya=1d13f8a9-8b8c-4b8a-a0ec-167a4a466859_WhatsApp Image 2026-07-30 at 10.18.59 (7).jpeg sure=122.3ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-05 10:24:31,974 INFO istek tamamlandi: dosya=8f20f51a-c848-46a9-ad46-63e58eefcee8_WhatsApp Image 2026-07-30 at 10.18.59 (8).jpeg sure=120.2ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-05 10:24:32,098 INFO istek tamamlandi: dosya=b99d5f67-73cb-4119-a80f-a87978c242f3_WhatsApp Image 2026-07-30 at 10.18.59 (9).jpeg sure=116.3ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-05 10:24:32,235 INFO istek tamamlandi: dosya=e4f3ba8a-2249-4992-a4ac-81cfc06f9be1_WhatsApp Image 2026-07-30 at 10.18.59.jpeg sure=127.4ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-10 09:32:41,655 INFO ==============================================================================
+2026-08-10 09:32:41,660 INFO N2: BTİNME cikarim servisi baslatiliyor (Pyton/app.py, N-v2)
+2026-08-10 09:32:41,660 INFO kol=focal_tversky  mod=ensemble_5fold
+2026-08-10 09:32:43,120 INFO checkpoint SHA-256 dogrulamasi: OK (5/5 eslesti)
+2026-08-10 09:32:43,120 INFO   fold0  e8a876d1a5e3eaf578601ccafced22afa3a8c027e42c11758920ae4ae5e5b554
+2026-08-10 09:32:43,120 INFO   fold1  55f10ef62fb08d26e0ed0aa70d3c382aba99699cef3fa72e90095becb3722430
+2026-08-10 09:32:43,120 INFO   fold2  8579e29654f5e9f6a3dbb4446281f2a97d1108af6a189b450c0a3c79bab6f315
+2026-08-10 09:32:43,120 INFO   fold3  fc0340b0e9014408aa9a0dc27ca3338e065fec84ba5ba0f0c634eb3cfa26a5e1
+2026-08-10 09:32:43,120 INFO   fold4  d4a5e51a8587038402f255d7fa9223a4b6db8e5177e79e9d8aa16d2595251545
+2026-08-10 09:32:43,120 INFO cihaz: cuda
+2026-08-10 09:32:43,932 INFO isinma tamamlandi: 811.4 ms
+2026-08-10 09:32:43,958 INFO tek-goruntu cikarim suresi (isinma sonrasi, 5-fold toplam): 22.9 ms
+2026-08-10 09:32:43,958 INFO ==============================================================================
+2026-08-10 09:32:45,021 INFO istek tamamlandi: dosya=7e230e8c-4194-4cd1-abab-e050df9bdffb_10110.png sure=138.5ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-10 09:32:45,127 INFO istek tamamlandi: dosya=02d68395-2469-48a2-b6f5-b79f28ce0f50_10147.png sure=60.6ms lezyonAlanPx=307 girdiKontrol=warn
+2026-08-10 09:32:45,206 INFO istek tamamlandi: dosya=d3701416-bfee-4b72-9949-4a766c77ae22_10192.png sure=63.6ms lezyonAlanPx=946 girdiKontrol=warn
+2026-08-10 09:32:45,295 INFO istek tamamlandi: dosya=6fd16a2f-7c87-4f81-91ba-bfdeda4da31c_10432.png sure=78.7ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-10 09:32:45,359 INFO istek tamamlandi: dosya=62d5e863-3fe7-40ef-a04a-a06996648f8d_10560.png sure=58.3ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-10 09:32:45,492 INFO istek tamamlandi: dosya=49e31813-27d1-4b7a-8a7e-9099b6adc459_10583.png sure=126.7ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-10 09:32:45,564 INFO istek tamamlandi: dosya=48070ee6-b7b3-450e-8a68-9c3055272c2f_10020.png sure=66.5ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-10 09:32:45,647 INFO istek tamamlandi: dosya=a3df182d-05fe-43e2-a7fe-ddf862ff0010_10064.png sure=77.1ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-11 14:48:41,239 INFO ==============================================================================
+2026-08-11 14:48:41,239 INFO N2: BTİNME cikarim servisi baslatiliyor (Pyton/app.py, N-v2)
+2026-08-11 14:48:41,239 INFO kol=focal_tversky  mod=ensemble_5fold
+2026-08-11 14:48:42,317 INFO checkpoint SHA-256 dogrulamasi: OK (5/5 eslesti)
+2026-08-11 14:48:42,317 INFO   fold0  e8a876d1a5e3eaf578601ccafced22afa3a8c027e42c11758920ae4ae5e5b554
+2026-08-11 14:48:42,317 INFO   fold1  55f10ef62fb08d26e0ed0aa70d3c382aba99699cef3fa72e90095becb3722430
+2026-08-11 14:48:42,317 INFO   fold2  8579e29654f5e9f6a3dbb4446281f2a97d1108af6a189b450c0a3c79bab6f315
+2026-08-11 14:48:42,317 INFO   fold3  fc0340b0e9014408aa9a0dc27ca3338e065fec84ba5ba0f0c634eb3cfa26a5e1
+2026-08-11 14:48:42,317 INFO   fold4  d4a5e51a8587038402f255d7fa9223a4b6db8e5177e79e9d8aa16d2595251545
+2026-08-11 14:48:42,317 INFO cihaz: cuda
+2026-08-11 14:48:42,947 INFO isinma tamamlandi: 629.7 ms
+2026-08-11 14:48:42,967 INFO tek-goruntu cikarim suresi (isinma sonrasi, 5-fold toplam): 20.0 ms
+2026-08-11 14:48:42,967 INFO ==============================================================================
+2026-08-11 14:50:40,244 INFO istek tamamlandi: dosya=c1650f84-412b-4bef-bcc7-7b24b2ac3ebc_15607.png sure=346.3ms lezyonAlanPx=971 girdiKontrol=warn
+2026-08-11 14:50:40,432 INFO istek tamamlandi: dosya=e465a9b5-5712-48ae-b9c2-840e2bbae3ad_16012.png sure=97.0ms lezyonAlanPx=19 girdiKontrol=warn
+2026-08-11 14:50:40,528 INFO istek tamamlandi: dosya=5f64fe9d-1a03-4fb7-9ef0-b7b4c3cb09f5_16021.png sure=84.1ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-11 14:50:40,592 INFO istek tamamlandi: dosya=39a71013-e080-40cc-8332-049c64e5692c_16092.png sure=55.8ms lezyonAlanPx=324 girdiKontrol=warn
+2026-08-11 14:50:40,667 INFO istek tamamlandi: dosya=54860485-c756-4555-8a7b-756d451340fb_16242.png sure=68.2ms lezyonAlanPx=5 girdiKontrol=warn
+2026-08-11 14:50:40,732 INFO istek tamamlandi: dosya=8b17f319-528f-4a86-b2d8-399ff0ed7c5c_16290.png sure=58.3ms lezyonAlanPx=576 girdiKontrol=warn
+2026-08-11 14:50:40,787 INFO istek tamamlandi: dosya=bc8ce4b5-1204-4bb1-8b23-297bdc134231_16292.png sure=50.0ms lezyonAlanPx=110 girdiKontrol=warn
+2026-08-11 14:50:40,850 INFO istek tamamlandi: dosya=ff4a61c6-e96b-40a7-b41c-d6c158157ba6_14827.png sure=52.1ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-11 14:50:40,948 INFO istek tamamlandi: dosya=b11a84d2-db62-4674-a8c3-fb361da051fe_14969.png sure=90.9ms lezyonAlanPx=56 girdiKontrol=warn
+2026-08-11 14:50:41,008 INFO istek tamamlandi: dosya=f9261a91-6596-4f52-a7be-1411ebf20952_15072.png sure=55.0ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-11 14:50:41,068 INFO istek tamamlandi: dosya=71a7bba7-afc5-4b0d-b291-39f981154977_15090.png sure=54.3ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-11 14:50:41,136 INFO istek tamamlandi: dosya=ad7aab87-ad4f-4385-8028-3113911e101e_15260.png sure=60.9ms lezyonAlanPx=0 girdiKontrol=warn
+2026-08-20 12:10:46,379 INFO ==============================================================================
+2026-08-20 12:10:46,381 INFO N2: BTİNME cikarim servisi baslatiliyor (Pyton/app.py, N-v2)
+2026-08-20 12:10:46,381 INFO kol=focal_tversky  mod=ensemble_5fold
+2026-08-20 12:10:47,412 INFO checkpoint SHA-256 dogrulamasi: OK (5/5 eslesti)
+2026-08-20 12:10:47,412 INFO   fold0  e8a876d1a5e3eaf578601ccafced22afa3a8c027e42c11758920ae4ae5e5b554
+2026-08-20 12:10:47,412 INFO   fold1  55f10ef62fb08d26e0ed0aa70d3c382aba99699cef3fa72e90095becb3722430
+2026-08-20 12:10:47,412 INFO   fold2  8579e29654f5e9f6a3dbb4446281f2a97d1108af6a189b450c0a3c79bab6f315
+2026-08-20 12:10:47,412 INFO   fold3  fc0340b0e9014408aa9a0dc27ca3338e065fec84ba5ba0f0c634eb3cfa26a5e1
+2026-08-20 12:10:47,412 INFO   fold4  d4a5e51a8587038402f255d7fa9223a4b6db8e5177e79e9d8aa16d2595251545
+2026-08-20 12:10:47,412 INFO cihaz: cuda
+2026-08-20 12:10:47,805 INFO isinma tamamlandi: 392.8 ms
+2026-08-20 12:10:47,822 INFO tek-goruntu cikarim suresi (isinma sonrasi, 5-fold toplam): 17.6 ms
+2026-08-20 12:10:47,822 INFO ==============================================================================
+2026-09-06 19:08:40,237 INFO ==============================================================================
+2026-09-06 19:08:40,237 INFO N2: BTİNME cikarim servisi baslatiliyor (Pyton/app.py, N-v2)
+2026-09-06 19:08:40,237 INFO kol=focal_tversky  mod=ensemble_5fold
+2026-09-06 19:08:41,649 INFO checkpoint SHA-256 dogrulamasi: OK (5/5 eslesti)
+2026-09-06 19:08:41,649 INFO   fold0  e8a876d1a5e3eaf578601ccafced22afa3a8c027e42c11758920ae4ae5e5b554
+2026-09-06 19:08:41,649 INFO   fold1  55f10ef62fb08d26e0ed0aa70d3c382aba99699cef3fa72e90095becb3722430
+2026-09-06 19:08:41,649 INFO   fold2  8579e29654f5e9f6a3dbb4446281f2a97d1108af6a189b450c0a3c79bab6f315
+2026-09-06 19:08:41,649 INFO   fold3  fc0340b0e9014408aa9a0dc27ca3338e065fec84ba5ba0f0c634eb3cfa26a5e1
+2026-09-06 19:08:41,649 INFO   fold4  d4a5e51a8587038402f255d7fa9223a4b6db8e5177e79e9d8aa16d2595251545
+2026-09-06 19:08:41,649 INFO cihaz: cuda
+2026-09-06 19:08:42,045 INFO isinma tamamlandi: 395.9 ms
+2026-09-06 19:08:42,061 INFO tek-goruntu cikarim suresi (isinma sonrasi, 5-fold toplam): 15.8 ms
+2026-09-06 19:08:42,061 INFO ==============================================================================

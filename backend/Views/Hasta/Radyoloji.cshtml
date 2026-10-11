@@ -1,0 +1,693 @@
+﻿@model BTİNME.Models.Hasta
+
+@{
+    ViewData["Title"] = "Radyoloji Klasörleri & AI Paneli";
+}
+
+<style>
+    .radyoloji-header {
+        background: linear-gradient(135deg, #0b1e36 0%, #1e3a5f 100%);
+        border-radius: 20px;
+        color: #fff;
+        padding: 24px 28px;
+    }
+
+    .radyoloji-badge {
+        background: rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        color: #7dd3a8;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.6px;
+        padding: 5px 14px;
+        border-radius: 20px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        text-transform: uppercase;
+    }
+
+    .section-card {
+        background: #fff;
+        border: 1px solid #eef1f5;
+        border-radius: 18px;
+        box-shadow: 0 4px 18px rgba(15, 30, 60, 0.05);
+        padding: 24px;
+    }
+
+    .section-title {
+        font-size: 1.02rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 18px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid #f0f2f5;
+    }
+
+    .form-label-sm {
+        font-size: 0.74rem;
+        font-weight: 700;
+        letter-spacing: 0.4px;
+        color: #64748b;
+        text-transform: uppercase;
+        margin-bottom: 4px;
+    }
+
+    .form-control-modern, .form-select-modern {
+        border-radius: 10px;
+        border: 1.5px solid #e5e9f0;
+        padding: 10px 14px;
+        font-size: 0.9rem;
+        background: #f8fafc;
+        transition: all .2s ease;
+    }
+
+    .btn-modern-success {
+        background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+        border: none;
+        border-radius: 10px;
+        font-weight: 700;
+        box-shadow: 0 6px 16px rgba(13, 110, 253, 0.25);
+    }
+
+    .folder-card {
+        border: 1.5px solid #e2e8f0;
+        border-radius: 16px;
+        background: #ffffff;
+        transition: all 0.25s ease;
+        text-decoration: none !important;
+        display: block;
+        overflow: hidden;
+        position: relative;
+    }
+
+        .folder-card:hover {
+            transform: translateY(-4px);
+            border-color: #0d6efd;
+            box-shadow: 0 12px 24px rgba(13, 110, 253, 0.15);
+        }
+
+    .folder-icon-wrap {
+        background: linear-gradient(135deg, #0b1e36 0%, #1e3a5f 100%);
+        height: 110px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+    }
+
+    .folder-badge {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(4px);
+        color: #fff;
+        font-size: 0.7rem;
+        font-weight: 700;
+        padding: 3px 10px;
+        border-radius: 12px;
+    }
+
+    .folder-menu-btn {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        width: 30px;
+        height: 30px;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(4px);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+        z-index: 5;
+    }
+
+        .folder-menu-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+    .empty-state {
+        background: #f8fafc;
+        border: 2px dashed #cbd5e1;
+        border-radius: 18px;
+        text-align: center;
+        padding: 45px 20px;
+        color: #64748b;
+    }
+
+    .nav-pills-custom .nav-link {
+        font-size: 0.78rem;
+        font-weight: 600;
+        color: #64748b;
+        border-radius: 8px;
+        padding: 6px 12px;
+    }
+
+        .nav-pills-custom .nav-link.active {
+            background-color: #0d6efd;
+            color: #fff;
+        }
+
+    /* ---- WHATSAPP TARZI "MESAJ GÖNDER" MODALI ---- */
+    .share-modal-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.55);
+        z-index: 4000;
+        display: none;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .share-modal-backdrop.active {
+            display: flex;
+        }
+
+    .share-modal-box {
+        width: 420px;
+        max-width: 92vw;
+        max-height: 82vh;
+        background: #fff;
+        border-radius: 18px;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .share-modal-header {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 16px 18px;
+        border-bottom: 1px solid #eef1f5;
+    }
+
+    .share-modal-close {
+        background: #f1f5f9;
+        border: none;
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #475569;
+        flex-shrink: 0;
+    }
+
+        .share-modal-close:hover {
+            background: #e2e8f0;
+        }
+
+    .share-modal-title {
+        font-weight: 700;
+        font-size: 1.05rem;
+        color: #0f172a;
+    }
+
+    .share-modal-search-wrap {
+        padding: 12px 18px;
+        border-bottom: 1px solid #eef1f5;
+    }
+
+    .share-modal-search {
+        width: 100%;
+        border: 1.5px solid #22c55e;
+        border-radius: 24px;
+        padding: 9px 16px 9px 38px;
+        font-size: 0.88rem;
+        background: #f8fafc url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2394a3b8' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0'/%3E%3C/svg%3E") no-repeat 12px center;
+        background-size: 15px;
+    }
+
+        .share-modal-search:focus {
+            outline: none;
+            border-color: #16a34a;
+        }
+
+    .share-modal-list {
+        flex: 1;
+        overflow-y: auto;
+        padding: 4px 0;
+    }
+
+    .share-doctor-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 18px;
+        cursor: pointer;
+        transition: background .12s ease;
+    }
+
+        .share-doctor-row:hover {
+            background: #f8fafc;
+        }
+
+        .share-doctor-row.selected {
+            background: #f0fdf4;
+        }
+
+    .share-doctor-checkbox {
+        width: 20px;
+        height: 20px;
+        border-radius: 5px;
+        border: 2px solid #cbd5e1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        color: #fff;
+        font-size: 0.7rem;
+        transition: all .12s ease;
+    }
+
+    .share-doctor-row.selected .share-doctor-checkbox {
+        background: #22c55e;
+        border-color: #22c55e;
+    }
+
+    .share-doctor-avatar {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: #0d6efd;
+        color: #fff;
+        font-weight: 700;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .share-doctor-info {
+        flex: 1;
+        min-width: 0;
+        line-height: 1.35;
+    }
+
+        .share-doctor-info strong {
+            display: block;
+            font-size: 0.9rem;
+            color: #0f172a;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .share-doctor-info span {
+            display: block;
+            font-size: 0.76rem;
+            color: #94a3b8;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+    .share-modal-empty {
+        padding: 40px 20px;
+        text-align: center;
+        color: #94a3b8;
+        font-size: 0.85rem;
+    }
+
+    .share-modal-loading {
+        padding: 30px;
+        text-align: center;
+        color: #94a3b8;
+    }
+
+    /* WhatsApp'taki gibi sağ altta yüzen gönder butonu, seçim yapılınca belirir */
+    .share-send-fab {
+        position: absolute;
+        right: 20px;
+        bottom: 20px;
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        background: #22c55e;
+        color: #fff;
+        border: none;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        box-shadow: 0 8px 18px rgba(34, 197, 94, 0.4);
+    }
+
+        .share-send-fab.show {
+            display: flex;
+        }
+
+        .share-send-fab:hover {
+            background: #16a34a;
+        }
+
+    .share-send-count {
+        position: absolute;
+        top: -4px;
+        right: -4px;
+        background: #dc3545;
+        color: #fff;
+        font-size: 0.65rem;
+        font-weight: 700;
+        min-width: 18px;
+        height: 18px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 4px;
+    }
+</style>
+
+<div class="container-fluid py-3">
+
+    <!-- ÜST BAŞLIK -->
+    <div class="radyoloji-header d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+        <div>
+            <span class="radyoloji-badge mb-2 d-inline-flex">
+                <i class="bi bi-folder-symlink-fill"></i> Tıbbi Görüntüleme & PACS Modülü
+            </span>
+            <h3 class="fw-bold mb-0 mt-2">@Model.Isim @Model.Soyad <span class="fw-normal opacity-75">— Çekim Klasörleri</span></h3>
+        </div>
+        <a asp-action="Detay" asp-route-id="@Model.HastaId" class="btn btn-outline-light rounded-pill px-4">
+            <i class="bi bi-arrow-left me-1"></i> Klinik Dosyaya Dön
+        </a>
+    </div>
+
+    <div class="row g-4">
+        <!-- SOL KOLON: Kesit / Klasör Yükleme Formu -->
+        <div class="col-lg-4">
+            <div class="section-card">
+                <div class="section-title text-primary">
+                    <i class="bi bi-folder-plus"></i> Çekim Kesitleri Yükle
+                </div>
+                <form asp-action="CekimYukle" method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="hastaId" value="@Model.HastaId" />
+
+                    <div class="mb-3">
+                        <div class="form-label-sm">Görüntüleme Türü</div>
+                        <select name="goruntuTuru" class="form-select form-select-modern">
+                            <option value="BT">Beyin BT (Tomografi Kesitleri)</option>
+                            <option value="MR">Beyin MR (Rezonans Kesitleri)</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="form-label-sm">Çekim / Klasör Adı</div>
+                        <input type="text" name="aciklama" class="form-control form-control-modern" placeholder="Örn: Aksiyel Kesit Serisi 1" required />
+                    </div>
+
+                    <!-- SEÇİM MODU SEKMELERİ -->
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <div class="form-label-sm mb-0">Yükleme Yöntemi</div>
+                            <ul class="nav nav-pills nav-pills-custom" id="uploadTabs">
+                                <li class="nav-item">
+                                    <button class="nav-link active" type="button" onclick="setMode('files')">Çoklu Resim Seç</button>
+                                </li>
+                                <li class="nav-item">
+                                    <button class="nav-link" type="button" onclick="setMode('folder')">Klasör Seç</button>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- 1. MOD: KLASÖR İÇİNDEKİ RESİMLERİ ÇOKLU SEÇME -->
+                        <div id="filesInputBox">
+                            <input type="file" name="dosyalar" id="fileInputFiles" class="form-control form-control-modern" accept="image/*" multiple required />
+                            <small class="text-muted extra-small d-block mt-1">
+                                <i class="bi bi-info-circle me-1"></i>Klasöre girip <strong>Ctrl + A</strong> ile 10-15 kesiti tek seferde seçebilirsiniz.
+                            </small>
+                        </div>
+
+                        <!-- 2. MOD: DOĞRUDAN KLASÖRÜ SEÇME -->
+                        <div id="folderInputBox" class="d-none">
+                            <input type="file" name="dosyalar" id="fileInputFolder" class="form-control form-control-modern" webkitdirectory directory multiple disabled />
+                            <small class="text-muted extra-small d-block mt-1">
+                                <i class="bi bi-info-circle me-1"></i>İçinde kesitler bulunan klasörü doğrudan seçebilirsiniz.
+                            </small>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-modern-success w-100 py-2-5 text-white mt-2">
+                        <i class="bi bi-cloud-upload-fill me-1"></i> Kesit Serisini Sisteme Yükle
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- SAĞ KOLON: Hastanın Çekim Klasörleri Listesi -->
+        <div class="col-lg-8">
+            <div class="section-card">
+                <div class="section-title text-dark">
+                    <i class="bi bi-grid-3x3-gap-fill text-primary"></i> Kayıtlı Çekim Klasörleri (PACS)
+                </div>
+
+                @if (Model.Goruntus != null && Model.Goruntus.Any())
+                {
+                    var gruplanmisCekimler = Model.Goruntus
+                    .GroupBy(g => new { g.GoruntuTuru, Tarih = g.CekimTarihi?.ToString("dd.MM.yyyy HH:mm") })
+                    .ToList();
+
+                    <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-3">
+                        @foreach (var grup in gruplanmisCekimler)
+                        {
+                            var ilkKesit = grup.First();
+                            int kesitSayisi = grup.Count();
+
+                            <div class="col">
+                                <a asp-action="CekimDetay" asp-route-id="@ilkKesit.GoruntuId" class="folder-card shadow-sm">
+                                    <div class="folder-icon-wrap">
+                                        <i class="bi bi-folder-fill display-3 text-info opacity-75"></i>
+                                        <span class="folder-badge">@grup.Key.GoruntuTuru</span>
+
+                                        <button type="button" class="folder-menu-btn"
+                                                data-hasta-id="@Model.HastaId"
+                                                data-goruntu-turu="@grup.Key.GoruntuTuru"
+                                                data-cekim-tarihi="@ilkKesit.CekimTarihi?.ToString("o")"
+                                                onclick="openShareModal(event, this)"
+                                                title="Doktora gönder">
+                                            <i class="bi bi-three-dots"></i>
+                                        </button>
+                                    </div>
+                                    <div class="p-3">
+                                        <h6 class="fw-bold text-dark mb-1 text-truncate">@(ilkKesit.Aciklama ?? "Aksiyel Çekim Serisi")</h6>
+                                        <div class="d-flex justify-content-between align-items-center mt-2 text-muted small">
+                                            <span><i class="bi bi-layers-fill text-primary me-1"></i><strong>@kesitSayisi</strong> Kesit (Slice)</span>
+                                            <span><i class="bi bi-clock me-1"></i>@grup.Key.Tarih</span>
+                                        </div>
+                                        <div class="mt-3 pt-2 border-top text-center">
+                                            <span class="btn btn-sm btn-outline-primary rounded-pill w-100 fw-semibold">
+                                                <i class="bi bi-eye-fill me-1"></i> Klasörü İncele & AI
+                                            </span>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="empty-state">
+                        <i class="bi bi-folder-x display-4 text-muted mb-2 d-block"></i>
+                        <h6 class="fw-bold text-dark">Henüz Yüklenmiş Çekim Klasörü Bulunmamaktadır</h6>
+                        <small>Sol taraftaki panelden kesit resimlerini seçerek ilk çekim serinizi oluşturabilirsiniz.</small>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- WHATSAPP TARZI "MESAJ GÖNDER" MODALI -->
+<div class="share-modal-backdrop" id="shareModalBackdrop" onclick="if(event.target===this) closeShareModal()">
+    <div class="share-modal-box">
+        <div class="share-modal-header">
+            <button type="button" class="share-modal-close" onclick="closeShareModal()"><i class="bi bi-x-lg"></i></button>
+            <span class="share-modal-title">Mesaj gönder</span>
+        </div>
+
+        <div class="share-modal-search-wrap">
+            <input type="text" class="share-modal-search" id="shareSearchInput" placeholder="Doktor adı ara..." oninput="filterShareDoctors(this.value)">
+        </div>
+
+        <div class="share-modal-list" id="shareModalList">
+            <div class="share-modal-loading">
+                <div class="spinner-border spinner-border-sm text-success"></div>
+                <div class="mt-2">Doktorlar yükleniyor...</div>
+            </div>
+        </div>
+
+        <button type="button" class="share-send-fab" id="shareSendFab" onclick="submitFolderShare()">
+            <i class="bi bi-send-fill"></i>
+            <span class="share-send-count" id="shareSendCount">0</span>
+        </button>
+    </div>
+</div>
+
+<script>
+    function setMode(mode) {
+        var filesBox = document.getElementById('filesInputBox');
+        var folderBox = document.getElementById('folderInputBox');
+        var filesInput = document.getElementById('fileInputFiles');
+        var folderInput = document.getElementById('fileInputFolder');
+        var tabs = document.querySelectorAll('#uploadTabs .nav-link');
+
+        if (mode === 'files') {
+            filesBox.classList.remove('d-none');
+            folderBox.classList.add('d-none');
+            filesInput.removeAttribute('disabled');
+            filesInput.setAttribute('required', 'required');
+            folderInput.setAttribute('disabled', 'disabled');
+            folderInput.removeAttribute('required');
+            tabs[0].classList.add('active');
+            tabs[1].classList.remove('active');
+        } else {
+            filesBox.classList.add('d-none');
+            folderBox.classList.remove('d-none');
+            folderInput.removeAttribute('disabled');
+            folderInput.setAttribute('required', 'required');
+            filesInput.setAttribute('disabled', 'disabled');
+            filesInput.removeAttribute('required');
+            tabs[1].classList.add('active');
+            tabs[0].classList.remove('active');
+        }
+    }
+</script>
+
+<!-- WHATSAPP TARZI "MESAJ GÖNDER" MODALI SCRIPT'İ -->
+<script>
+    let shareDoctorsCache = null;
+    let shareSelectedIds = new Set();
+    let shareCurrentFolder = null; // { hastaId, goruntuTuru, cekimTarihi }
+
+    async function openShareModal(e, btn) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        shareCurrentFolder = {
+            hastaId: btn.dataset.hastaId,
+            goruntuTuru: btn.dataset.goruntuTuru,
+            cekimTarihi: btn.dataset.cekimTarihi
+        };
+        shareSelectedIds = new Set();
+        updateShareSendFab();
+
+        document.getElementById('shareSearchInput').value = '';
+        document.getElementById('shareModalBackdrop').classList.add('active');
+
+        if (!shareDoctorsCache) {
+            document.getElementById('shareModalList').innerHTML = `
+                <div class="share-modal-loading">
+                    <div class="spinner-border spinner-border-sm text-success"></div>
+                    <div class="mt-2">Doktorlar yükleniyor...</div>
+                </div>`;
+            const res = await fetch('/Mesaj/DoktorlariGetir');
+            shareDoctorsCache = await res.json();
+        }
+
+        renderShareDoctorList(shareDoctorsCache);
+    }
+
+    function closeShareModal() {
+        document.getElementById('shareModalBackdrop').classList.remove('active');
+    }
+
+    function renderShareDoctorList(list) {
+        const container = document.getElementById('shareModalList');
+
+        if (!list || list.length === 0) {
+            container.innerHTML = `<div class="share-modal-empty"><i class="bi bi-people display-6 d-block mb-2 opacity-50"></i>Kayıtlı başka doktor bulunamadı.</div>`;
+            return;
+        }
+
+        container.innerHTML = list.map(d => {
+            const baslar = (d.isim ? d.isim.charAt(0) : '?') + (d.soyad ? d.soyad.charAt(0) : '');
+            const isSelected = shareSelectedIds.has(d.doktorId);
+            const altYazi = d.sonMesaj ? d.sonMesaj : (d.uzmanlikAlani || 'Uzman Hekim');
+            return `
+                <div class="share-doctor-row ${isSelected ? 'selected' : ''}" data-doctor-name="${(d.isim + ' ' + d.soyad).toLowerCase()}" onclick="toggleShareDoctor(${d.doktorId}, this)">
+                    <div class="share-doctor-checkbox">${isSelected ? '<i class=\"bi bi-check-lg\"></i>' : ''}</div>
+                    <div class="share-doctor-avatar">${baslar}</div>
+                    <div class="share-doctor-info">
+                        <strong>Dr. ${d.isim} ${d.soyad}</strong>
+                        <span>${altYazi}</span>
+                    </div>
+                </div>`;
+        }).join('');
+    }
+
+    function toggleShareDoctor(doktorId, rowEl) {
+        if (shareSelectedIds.has(doktorId)) {
+            shareSelectedIds.delete(doktorId);
+            rowEl.classList.remove('selected');
+            rowEl.querySelector('.share-doctor-checkbox').innerHTML = '';
+        } else {
+            shareSelectedIds.add(doktorId);
+            rowEl.classList.add('selected');
+            rowEl.querySelector('.share-doctor-checkbox').innerHTML = '<i class="bi bi-check-lg"></i>';
+        }
+        updateShareSendFab();
+    }
+
+    function updateShareSendFab() {
+        const fab = document.getElementById('shareSendFab');
+        const count = document.getElementById('shareSendCount');
+        if (shareSelectedIds.size > 0) {
+            fab.classList.add('show');
+            count.textContent = shareSelectedIds.size;
+        } else {
+            fab.classList.remove('show');
+        }
+    }
+
+    function filterShareDoctors(query) {
+        const q = query.trim().toLowerCase();
+        document.querySelectorAll('#shareModalList .share-doctor-row').forEach(row => {
+            row.style.display = row.dataset.doctorName.includes(q) ? 'flex' : 'none';
+        });
+    }
+
+    async function submitFolderShare() {
+        if (shareSelectedIds.size === 0 || !shareCurrentFolder) return;
+
+        const fab = document.getElementById('shareSendFab');
+        fab.disabled = true;
+        fab.innerHTML = '<span class="spinner-border spinner-border-sm text-white"></span>';
+
+        const formData = new FormData();
+        formData.append('hastaId', shareCurrentFolder.hastaId);
+        formData.append('goruntuTuru', shareCurrentFolder.goruntuTuru);
+        formData.append('cekimTarihi', shareCurrentFolder.cekimTarihi);
+        shareSelectedIds.forEach(id => formData.append('aliciDoktorIdler', id));
+
+        try {
+            const res = await fetch('/Mesaj/KlasorGonder', { method: 'POST', body: formData });
+            const data = await res.json();
+
+            if (data && data.success) {
+                closeShareModal();
+            } else {
+                alert(data?.message || 'Gönderilemedi, lütfen tekrar deneyin.');
+                fab.disabled = false;
+                fab.innerHTML = '<i class="bi bi-send-fill"></i><span class="share-send-count" id="shareSendCount">' + shareSelectedIds.size + '</span>';
+            }
+        } catch (err) {
+            alert('Bağlantı hatası, lütfen tekrar deneyin.');
+            fab.disabled = false;
+            fab.innerHTML = '<i class="bi bi-send-fill"></i><span class="share-send-count" id="shareSendCount">' + shareSelectedIds.size + '</span>';
+        }
+    }
+</script>

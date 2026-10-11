@@ -1,0 +1,200 @@
+﻿@model IEnumerable<BTİNME.Models.Hasta>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Hasta Yönetim Paneli";
+
+    int toplamHasta = Model?.Count() ?? 0;
+    int erkekSayisi = Model?.Count(h => h.Cinsiyet == "Erkek") ?? 0;
+    int kadinSayisi = Model?.Count(h => h.Cinsiyet == "Kadın") ?? 0;
+}
+
+<div class="container-fluid px-3">
+
+    <!-- İSTATİSTİK VE ÖZET KARTLARI -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4 p-3 bg-white border-start border-4 border-primary">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <span class="text-muted small fw-bold text-uppercase d-block mb-1">Kayıtlı Hastalarım</span>
+                        <h3 class="fw-bold text-dark mb-0">@toplamHasta</h3>
+                    </div>
+                    <div class="rounded-circle bg-primary bg-opacity-10 p-3 text-primary">
+                        <i class="bi bi-people-fill fs-3"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4 p-3 bg-white border-start border-4 border-info">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <span class="text-muted small fw-bold text-uppercase d-block mb-1">Erkek Hasta Sayısı</span>
+                        <h3 class="fw-bold text-dark mb-0">@erkekSayisi</h3>
+                    </div>
+                    <div class="rounded-circle bg-info bg-opacity-10 p-3 text-info">
+                        <i class="bi bi-gender-male fs-3"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4 p-3 bg-white border-start border-4 border-danger">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <span class="text-muted small fw-bold text-uppercase d-block mb-1">Kadın Hasta Sayısı</span>
+                        <h3 class="fw-bold text-dark mb-0">@kadinSayisi</h3>
+                    </div>
+                    <div class="rounded-circle bg-danger bg-opacity-10 p-3 text-danger">
+                        <i class="bi bi-gender-female fs-3"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ANA TABLO KARTI VE FİLTRE HİZALAMASI -->
+    <div class="card border-0 shadow-sm rounded-4 bg-white overflow-hidden">
+        <div class="card-header bg-white p-4 border-0 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+            <div>
+                <h4 class="fw-bold text-dark mb-1"><i class="bi bi-person-vcard text-primary me-2"></i>Hasta Yönetim Paneli</h4>
+                <p class="text-muted small mb-0">Takip ettiğiniz hastaların klinik dosyalarına ve radyolojik görüntülerine buradan erişebilirsiniz.</p>
+            </div>
+
+            <div class="d-flex gap-2 align-items-center">
+                <!-- ARAMA ÇUBUĞU -->
+                <div class="input-group input-group-sm" style="width: 260px;">
+                    <span class="input-group-text bg-light border-end-0 rounded-pill-start ps-3"><i class="bi bi-search text-muted"></i></span>
+                    <input type="text" id="hastaAramaInput" class="form-control bg-light border-start-0 rounded-pill-end" placeholder="Ad, Soyad veya TC ile ara..." onkeyup="hastaFiltrele()" />
+                </div>
+
+                <!-- YENİ HASTA BUTONU -->
+                <a asp-controller="Hasta" asp-action="Ekle" class="btn btn-primary rounded-pill px-3 shadow-sm btn-sm fw-bold">
+                    <i class="bi bi-person-plus-fill me-1"></i> Yeni Hasta Kaydı
+                </a>
+            </div>
+        </div>
+
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0" id="hastaTablosu">
+                    <thead style="background: #f1f5f9; color: #475569;">
+                        <tr class="text-uppercase extra-small fw-bold">
+                            <th class="ps-4 py-3">Hasta Bilgisi</th>
+                            <th class="py-3">TC Kimlik No</th>
+                            <th class="py-3">Telefon</th>
+                            <th class="py-3">Cinsiyet</th>
+                            <th class="text-end pe-4 py-3">Klinik İşlemleri</th>
+                        </tr>
+                    </thead>
+                    <tbody class="border-top-0">
+                        @if (Model != null && Model.Any())
+                        {
+                            @foreach (var hasta in Model)
+                            {
+                                <tr>
+                                    <!-- HASTA AVATAR VE İSİM -->
+                                    <td class="ps-4 py-3">
+                                        <div class="d-flex align-items-center gap-3">
+                                            <div class="rounded-circle bg-primary bg-opacity-10 text-primary fw-bold d-flex align-items-center justify-content-center"
+                                                 style="width: 42px; height: 42px; font-size: 0.95rem; flex-shrink: 0;">
+                                                @(hasta.Isim?.Substring(0, 1))@(hasta.Soyad?.Substring(0, 1))
+                                            </div>
+                                            <div>
+                                                <strong class="d-block text-dark fs-6 mb-0 hasta-adsoyad">@hasta.Isim @hasta.Soyad</strong>
+                                                <small class="text-muted extra-small">Kayıtlı Klinik Hastası</small>
+                                            </div>
+                                        </div>
+                                    </td>
+
+                                    <!-- TC NO -->
+                                    <td class="fw-semibold text-secondary hasta-tc">
+                                        <i class="bi bi-card-heading text-muted me-1"></i>@hasta.Tc
+                                    </td>
+
+                                    <!-- TELEFON -->
+                                    <td class="text-secondary">
+                                        <i class="bi bi-telephone text-muted me-1"></i>@(hasta.Telefon ?? "Belirtilmedi")
+                                    </td>
+
+                                    <!-- CİNSİYET ROZETİ -->
+                                    <td>
+                                        @if (hasta.Cinsiyet == "Erkek")
+                                        {
+                                            <span class="badge bg-info bg-opacity-10 text-info px-3 py-1-5 rounded-pill border border-info border-opacity-25">
+                                                <i class="bi bi-gender-male me-1"></i> Erkek
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-danger bg-opacity-10 text-danger px-3 py-1-5 rounded-pill border border-danger border-opacity-25">
+                                                <i class="bi bi-gender-female me-1"></i> Kadın
+                                            </span>
+                                        }
+                                    </td>
+
+                                    <!-- İŞLEM BUTONLARI -->
+                                    <td class="text-end pe-4 py-3">
+                                        <div class="d-flex justify-content-end gap-2">
+                                            <!-- KLİNİK DETAY VE MUAYENE -->
+                                            <a asp-controller="Hasta" asp-action="Detay" asp-route-id="@hasta.HastaId"
+                                               class="btn btn-sm btn-outline-primary rounded-pill px-3 shadow-sm fw-semibold">
+                                                <i class="bi bi-journal-medical me-1"></i> Muayene / Detay
+                                            </a>
+
+                                            <!-- RADYOLOJİ & AI SAYFASI -->
+                                            <a asp-controller="Hasta" asp-action="Radyoloji" asp-route-id="@hasta.HastaId"
+                                               class="btn btn-sm btn-success rounded-pill px-3 shadow-sm fw-semibold">
+                                                <i class="bi bi-cpu-fill me-1"></i> Radyoloji 
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="5" class="text-center py-5 text-muted">
+                                    <i class="bi bi-folder-x display-4 d-block mb-2 text-secondary opacity-50"></i>
+                                    <h6>Henüz Sistemde Kayıtlı Hasta Bulunmamaktadır.</h6>
+                                    <small>Yukarıdaki "+ Yeni Hasta Kaydı" butonunu kullanarak hasta ekleyebilirsiniz.</small>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CANLI HASTA ARAMA SCRIPT'İ -->
+<script>
+    function hastaFiltrele() {
+        var input = document.getElementById("hastaAramaInput");
+        var filter = input.value.toLowerCase();
+        var table = document.getElementById("hastaTablosu");
+        var tr = table.getElementsByTagName("tr");
+
+        for (var i = 1; i < tr.length; i++) {
+            var row = tr[i];
+            var adSoyadElem = row.querySelector(".hasta-adsoyad");
+            var tcElem = row.querySelector(".hasta-tc");
+
+            if (adSoyadElem || tcElem) {
+                var adSoyadText = adSoyadElem ? adSoyadElem.textContent.toLowerCase() : "";
+                var tcText = tcElem ? tcElem.textContent.toLowerCase() : "";
+
+                if (adSoyadText.indexOf(filter) > -1 || tcText.indexOf(filter) > -1) {
+                    row.style.display = "";
+                } else {
+                    row.style.display = "none";
+                }
+            }
+        }
+    }
+</script>

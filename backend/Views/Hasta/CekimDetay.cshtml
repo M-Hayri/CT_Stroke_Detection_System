@@ -1,0 +1,615 @@
+﻿@model BTİNME.Models.Hasta
+
+@{
+    ViewData["Title"] = "Çekim İnceleme & AI Analiz Sonuçları";
+    var tumKesitler = ViewBag.TumKesitler as List<BTİNME.Models.Goruntu> ?? new List<BTİNME.Models.Goruntu>();
+    var anaGoruntu = ViewBag.AnaGoruntu as BTİNME.Models.Goruntu;
+
+    var inmeliKesitler = tumKesitler.Where(k => k.SegmentasyonSonucus != null && k.SegmentasyonSonucus.Any()).ToList();
+}
+
+<style>
+    .cekim-header {
+        background: linear-gradient(135deg, #0b1e36 0%, #1e3a5f 100%);
+        border-radius: 20px;
+        color: #fff;
+        padding: 20px 28px;
+    }
+
+    .slice-card {
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        overflow: hidden;
+        background: #000;
+        transition: all 0.2s ease;
+        width: 140px;
+        flex-shrink: 0;
+    }
+
+        .slice-card:hover {
+            border-color: #0d6efd;
+            transform: scale(1.03);
+        }
+
+    .slice-img-wrap {
+        height: 120px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .slice-img-wrap img {
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+        }
+
+    .slice-badge {
+        background: #1e293b;
+        color: #cbd5e1;
+        font-size: 0.68rem;
+        font-weight: 700;
+        padding: 4px;
+        text-align: center;
+    }
+
+    .slice-scroll-container {
+        display: flex;
+        gap: 12px;
+        overflow-x: auto;
+        padding-bottom: 12px;
+        scroll-behavior: smooth;
+    }
+
+        .slice-scroll-container::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .slice-scroll-container::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+
+    .inme-result-card {
+        border: 1.5px solid #fecdd3;
+        background: #fff5f5;
+        border-radius: 16px;
+        overflow: hidden;
+    }
+
+    /* --- KART İÇİ KÜÇÜK ÖNİZLEME (sabit bindirmeli, sabit %75 opaklık) --- */
+    .mask-viewer {
+        position: relative;
+        width: 100%;
+        height: 200px;
+        background: #05070c;
+        overflow: hidden;
+        cursor: zoom-in;
+    }
+
+        .mask-viewer canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .mask-viewer .base-canvas {
+            z-index: 1;
+        }
+
+        .mask-viewer .overlay-canvas {
+            z-index: 2;
+            pointer-events: none;
+            opacity: 0.75;
+        }
+
+        .mask-viewer .loading-spin {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+            z-index: 3;
+        }
+
+    .zoom-hint-btn {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        background: rgba(13, 30, 54, 0.85);
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        font-size: 0.72rem;
+        font-weight: 700;
+        padding: 6px 12px;
+        z-index: 4;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .inme-tespiti-badge {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        z-index: 4;
+    }
+
+    /* --- PROFESYONEL RADYOLOJİ MODALI (YAN YANA KARŞILAŞTIRMA) --- */
+    .zoom-modal-backdrop {
+        position: fixed;
+        inset: 0;
+        background: #05070c;
+        z-index: 2000;
+        display: none;
+        flex-direction: column;
+    }
+
+        .zoom-modal-backdrop.active {
+            display: flex;
+        }
+
+    .zoom-modal-topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 24px;
+        background: #0b1622;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        color: #fff;
+        flex-shrink: 0;
+    }
+
+    .zoom-modal-title {
+        font-weight: 700;
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .zoom-close-btn {
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        color: #fff;
+        border-radius: 50%;
+        width: 38px;
+        height: 38px;
+        font-size: 1rem;
+    }
+
+    .zoom-modal-body {
+        flex: 1;
+        display: flex;
+        gap: 2px;
+        overflow: hidden;
+        background: #000;
+    }
+
+    .zoom-panel {
+        flex: 1;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        background: #000;
+    }
+
+    .zoom-panel-label {
+        position: absolute;
+        top: 14px;
+        left: 14px;
+        z-index: 5;
+        font-size: 0.74rem;
+        font-weight: 700;
+        letter-spacing: 0.4px;
+        padding: 5px 14px;
+        border-radius: 20px;
+        text-transform: uppercase;
+    }
+
+        .zoom-panel-label.original {
+            background: rgba(255, 255, 255, 0.12);
+            color: #e2e8f0;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .zoom-panel-label.marked {
+            background: rgba(220, 53, 69, 0.18);
+            color: #ff8f9c;
+            border: 1px solid rgba(220, 53, 69, 0.4);
+        }
+
+    .zoom-pan-stage {
+        flex: 1;
+        position: relative;
+        overflow: hidden;
+        cursor: grab;
+    }
+
+        .zoom-pan-stage.panning {
+            cursor: grabbing;
+        }
+
+    .zoom-pan-inner {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        transform-origin: 0 0;
+    }
+
+        .zoom-pan-inner canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+    #zoomOverlayCanvas {
+        opacity: 0.75;
+    }
+
+    .zoom-modal-toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: 18px;
+        background: #0b1622;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        padding: 12px 24px;
+        color: #94a3b8;
+        flex-shrink: 0;
+        font-size: 0.78rem;
+    }
+
+    .zoom-btn-tool {
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        color: #fff;
+        border-radius: 8px;
+        padding: 6px 14px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .toolbar-divider {
+        width: 1px;
+        height: 20px;
+        background: rgba(255, 255, 255, 0.15);
+    }
+</style>
+
+<div class="container-fluid py-3">
+
+    <!-- ÜST BAŞLIK ALANI -->
+    <div class="cekim-header d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+        <div>
+            <div class="d-flex align-items-center gap-2 mb-1">
+                <span class="badge bg-info text-dark font-monospace fw-bold">@anaGoruntu?.GoruntuTuru Serisi</span>
+                <small class="text-info"><i class="bi bi-clock me-1"></i>@(anaGoruntu?.CekimTarihi?.ToString("dd.MM.yyyy HH:mm"))</small>
+            </div>
+            <h3 class="fw-bold mb-0">@Model.Isim @Model.Soyad <span class="fw-normal opacity-75">— @(anaGoruntu?.Aciklama ?? "Kesit Serisi")</span></h3>
+        </div>
+        <a asp-action="Radyoloji" asp-route-id="@Model.HastaId" class="btn btn-outline-light rounded-pill px-4">
+            <i class="bi bi-arrow-left me-1"></i> Klasörlere Dön
+        </a>
+    </div>
+
+    <!-- 1. ÜST KISIM: SLICE STRIP -->
+    <div class="card border-0 shadow-sm rounded-4 bg-white p-4 mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h6 class="fw-bold text-dark mb-0">
+                <i class="bi bi-layers-half text-primary me-2"></i>Tüm Kesit Görselleri (@tumKesitler.Count Slice)
+            </h6>
+            <div class="d-flex gap-2">
+                <button class="btn btn-sm btn-outline-secondary rounded-circle" onclick="scrollSlices(-300)">
+                    <i class="bi bi-chevron-left"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-secondary rounded-circle" onclick="scrollSlices(300)">
+                    <i class="bi bi-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="slice-scroll-container" id="sliceScrollBox">
+            @{
+                int index = 1;
+            }
+            @foreach (var kesit in tumKesitler)
+            {
+                <div class="slice-card shadow-sm">
+                    <div class="slice-img-wrap">
+                        <img src="@kesit.DosyaYolu" alt="Kesit #@index" />
+                    </div>
+                    <div class="slice-badge">Kesit #@index</div>
+                </div>
+                index++;
+            }
+        </div>
+
+        <div class="text-center mt-4 pt-3 border-top">
+            <form asp-controller="Hasta" asp-action="CekimAnalizEt" method="post" class="d-inline-block">
+                <input type="hidden" name="hastaId" value="@Model.HastaId" />
+                <input type="hidden" name="goruntuTuru" value="@anaGoruntu?.GoruntuTuru" />
+                <input type="hidden" name="cekimTarihi" value="@anaGoruntu?.CekimTarihi?.ToString("o")" />
+                <button type="submit" class="btn btn-primary rounded-pill px-5 py-2-5 fw-bold shadow">
+                    <i class="bi bi-cpu-fill me-2"></i> StrokeNext AI Analizini Başlat (Tüm Kesitleri Tara)
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 2. ALT KISIM: İNME TESPİT EDİLEN KESİTLER -->
+    <div class="card border-0 shadow-sm rounded-4 bg-white p-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h5 class="fw-bold text-dark mb-1">
+                    <i class="bi bi-shield-exclamation text-danger me-2"></i>Analiz Sonuçları — Tespit Edilen İnme Bölgeleri
+                </h5>
+                <small class="text-muted">Karta tıklayarak orijinal ve AI işaretli görüntüyü tam boyutta yan yana inceleyip büyütebilirsiniz.</small>
+            </div>
+
+            @if (inmeliKesitler.Any())
+            {
+                <span class="badge bg-danger rounded-pill px-3 py-2 fs-6">
+                    <i class="bi bi-exclamation-triangle-fill me-1"></i> Toplam @inmeliKesitler.Count Kesitte İnme Saptandı
+                </span>
+            }
+        </div>
+
+        @if (inmeliKesitler.Any())
+        {
+            <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
+                @{
+                    int sonucIndex = 0;
+                }
+                @foreach (var inmeKesit in inmeliKesitler)
+                {
+                    sonucIndex++;
+                    var result = inmeKesit.SegmentasyonSonucus.First();
+
+                    <div class="col">
+                        <div class="inme-result-card shadow-sm h-100">
+
+                            <!-- KÜÇÜK ÖNİZLEME (bindirmeli, sabit %75 kırmızı overlay) -->
+                            <div class="mask-viewer"
+                                 data-original="@inmeKesit.DosyaYolu"
+                                 data-mask="@result.MaskeDosyaYolu"
+                                 data-label="Kesit #@sonucIndex"
+                                 onclick="openZoomModal(this)">
+                                <span class="badge bg-danger inme-tespiti-badge">İnme Tespiti</span>
+                                <canvas class="base-canvas"></canvas>
+                                <canvas class="overlay-canvas"></canvas>
+                                <div class="loading-spin"><div class="spinner-border spinner-border-sm"></div></div>
+                                <button type="button" class="zoom-hint-btn"><i class="bi bi-arrows-fullscreen"></i> Karşılaştır & Büyüt</button>
+                            </div>
+
+                            <div class="p-3">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="fw-bold text-danger small"><i class="bi bi-crosshair me-1"></i>Lokalizasyon Başarılı</span>
+                                    <span class="badge bg-success rounded-pill px-2-5 py-1">Güven: %@(((result.GuvenSkoru ?? 0) * 100).ToString("0.0"))</span>
+                                </div>
+                                <div class="d-flex justify-content-between text-muted" style="font-size: 0.72rem;">
+                                    <span><i class="bi bi-cpu me-1"></i>@(result.ModelVersiyonu ?? "Model bilgisi yok")</span>
+                                    <span><i class="bi bi-clock-history me-1"></i>@(result.IslemTarihi?.ToString("dd.MM.yyyy HH:mm"))</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-5 bg-light rounded-4 border">
+                <i class="bi bi-check-circle-fill display-4 text-success mb-2 d-block"></i>
+                <h6 class="fw-bold text-dark">İnme Bulgusuna Rastlanmadı veya Analiz Henüz Başlatılmadı</h6>
+                <small class="text-muted">Yukarıdaki "StrokeNext AI Analizini Başlat" butonuna basarak tüm kesitleri saniyeler içinde taratabilirsiniz.</small>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- PROFESYONEL RADYOLOJİ KARŞILAŞTIRMA MODALI (ORİJİNAL | İŞARETLİ YAN YANA) -->
+<div class="zoom-modal-backdrop" id="zoomModal">
+
+    <div class="zoom-modal-topbar">
+        <div class="zoom-modal-title" id="zoomLabel"><i class="bi bi-image"></i> Kesit</div>
+        <button class="zoom-close-btn" onclick="closeZoomModal()"><i class="bi bi-x-lg"></i></button>
+    </div>
+
+    <div class="zoom-modal-body">
+        <!-- SOL PANEL: ORİJİNAL -->
+        <div class="zoom-panel">
+            <span class="zoom-panel-label original"><i class="bi bi-image me-1"></i>Orijinal Görüntü</span>
+            <div class="zoom-pan-stage" id="zoomStageOriginal">
+                <div class="zoom-pan-inner" id="zoomInnerOriginal">
+                    <canvas id="zoomOriginalCanvas"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- SAĞ PANEL: AI İŞARETLİ -->
+        <div class="zoom-panel">
+            <span class="zoom-panel-label marked"><i class="bi bi-cpu me-1"></i>AI İşaretli Görüntü</span>
+            <div class="zoom-pan-stage" id="zoomStageMarked">
+                <div class="zoom-pan-inner" id="zoomInnerMarked">
+                    <canvas id="zoomBaseCanvas"></canvas>
+                    <canvas id="zoomOverlayCanvas"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="zoom-modal-toolbar">
+        <button type="button" class="zoom-btn-tool" onclick="resetZoomTransform()">
+            <i class="bi bi-aspect-ratio me-1"></i> Görünümü Sıfırla
+        </button>
+        <div class="toolbar-divider"></div>
+        <span><i class="bi bi-mouse me-1"></i>Fare tekerleği: Yakınlaştır &nbsp;•&nbsp; Sürükle: Kaydır &nbsp;•&nbsp; Her iki panel senkronize hareket eder</span>
+    </div>
+</div>
+
+<!-- KAYDIRMA SCRIPT'İ -->
+<script>
+    function scrollSlices(val) {
+        var box = document.getElementById("sliceScrollBox");
+        if (box) box.scrollBy({ left: val, behavior: 'smooth' });
+    }
+</script>
+
+<!-- MASKE MOTORU -->
+<script>
+    // NOT: model servisi "MaskeDosyaYolu" alaninda HAZIR BIR GORSEL doner (gri
+    // kafa-maskeli arka plan + macenta kontur, bkz. overlayYolu) -- orijinal BT
+    // goruntusu + yari-saydam kirmizi dolgu DEGIL. Bu yuzden piksel-renk
+    // filtrelemesi (kirmizi esigi arama) burada GEREKMEZ; maske gorseli
+    // dogrudan cizilir.
+    function loadImg(src) {
+        return new Promise((resolve, reject) => {
+            const img = new Image();
+            img.crossOrigin = "anonymous";
+            img.onload = () => resolve(img);
+            img.onerror = reject;
+            img.src = src;
+        });
+    }
+
+    function drawToCanvas(canvas, img, w, h) {
+        canvas.width = w; canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, w, h);
+        ctx.drawImage(img, 0, 0, w, h);
+        return ctx;
+    }
+
+    // AI isaretli goruntuyu (hazir composit: gri arka plan + macenta kontur) base
+    // canvas'a dogrudan cizer; overlay canvas artik bos birakilir (kullanilmiyor).
+    async function renderMaskLayers(originalSrc, maskSrc, baseCanvas, overlayCanvas) {
+        const maskImg = await loadImg(maskSrc);
+        const w = maskImg.naturalWidth || 224;
+        const h = maskImg.naturalHeight || 224;
+
+        drawToCanvas(baseCanvas, maskImg, w, h);
+
+        overlayCanvas.width = w; overlayCanvas.height = h;
+        overlayCanvas.getContext('2d').clearRect(0, 0, w, h);
+    }
+
+    // ---------- KART ÖNİZLEMELERİ ----------
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.mask-viewer').forEach(async (viewer) => {
+            const originalSrc = viewer.dataset.original;
+            const maskSrc = viewer.dataset.mask;
+            const baseCanvas = viewer.querySelector('.base-canvas');
+            const overlayCanvas = viewer.querySelector('.overlay-canvas');
+            const spinner = viewer.querySelector('.loading-spin');
+
+            await renderMaskLayers(originalSrc, maskSrc, baseCanvas, overlayCanvas);
+            if (spinner) spinner.style.display = 'none';
+        });
+    });
+
+    // ---------- YAN YANA KARŞILAŞTIRMA MODALI ----------
+    let zoomState = {
+        scale: 1,
+        panX: 0,
+        panY: 0,
+        isDragging: false,
+        lastX: 0,
+        lastY: 0
+    };
+
+    async function openZoomModal(viewerEl) {
+        const originalSrc = viewerEl.dataset.original;
+        const maskSrc = viewerEl.dataset.mask;
+        const label = viewerEl.dataset.label;
+
+        document.getElementById('zoomLabel').innerHTML = '<i class="bi bi-image"></i> ' + label;
+
+        // Sol panel: sade orijinal görüntü
+        const origImg = await loadImg(originalSrc);
+        const origCanvas = document.getElementById('zoomOriginalCanvas');
+        drawToCanvas(origCanvas, origImg, origImg.naturalWidth, origImg.naturalHeight);
+
+        // Sağ panel: base + overlay (kırmızı işaret)
+        const baseCanvas = document.getElementById('zoomBaseCanvas');
+        const overlayCanvas = document.getElementById('zoomOverlayCanvas');
+        await renderMaskLayers(originalSrc, maskSrc, baseCanvas, overlayCanvas);
+
+        resetZoomTransform();
+        document.getElementById('zoomModal').classList.add('active');
+        setupZoomInteractions();
+    }
+
+    function closeZoomModal() {
+        document.getElementById('zoomModal').classList.remove('active');
+    }
+
+    function resetZoomTransform() {
+        zoomState.scale = 1;
+        zoomState.panX = 0;
+        zoomState.panY = 0;
+        applyZoomTransform();
+    }
+
+    // İki panel de birlikte, senkronize şekilde zoom/pan olur
+    function applyZoomTransform() {
+        const t = `translate(${zoomState.panX}px, ${zoomState.panY}px) scale(${zoomState.scale})`;
+        document.getElementById('zoomInnerOriginal').style.transform = t;
+        document.getElementById('zoomInnerMarked').style.transform = t;
+    }
+
+    function setupZoomInteractions() {
+        const stages = [document.getElementById('zoomStageOriginal'), document.getElementById('zoomStageMarked')];
+
+        stages.forEach((stage) => {
+            if (stage.dataset.bound) return;
+            stage.dataset.bound = "1";
+
+            stage.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                const delta = e.deltaY > 0 ? -0.1 : 0.1;
+                zoomState.scale = Math.min(6, Math.max(1, zoomState.scale + delta));
+                applyZoomTransform();
+            });
+
+            stage.addEventListener('mousedown', (e) => {
+                zoomState.isDragging = true;
+                zoomState.lastX = e.clientX;
+                zoomState.lastY = e.clientY;
+                stages.forEach(s => s.classList.add('panning'));
+            });
+        });
+
+        if (!window.__zoomWindowBound) {
+            window.__zoomWindowBound = true;
+
+            window.addEventListener('mousemove', (e) => {
+                if (!zoomState.isDragging) return;
+                const dx = e.clientX - zoomState.lastX;
+                const dy = e.clientY - zoomState.lastY;
+                zoomState.panX += dx;
+                zoomState.panY += dy;
+                zoomState.lastX = e.clientX;
+                zoomState.lastY = e.clientY;
+                applyZoomTransform();
+            });
+
+            window.addEventListener('mouseup', () => {
+                zoomState.isDragging = false;
+                document.querySelectorAll('.zoom-pan-stage').forEach(s => s.classList.remove('panning'));
+            });
+        }
+    }
+</script>

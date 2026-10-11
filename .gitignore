@@ -1,0 +1,31 @@
+# --- .NET / Visual Studio ---
+backend/bin/
+backend/obj/
+*.user
+.vs/
+.idea/
+
+# --- Python ---
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# --- Model agirliklari (buyuk ikili dosyalar, Git icin uygun degil) ---
+model/agirliklar/*.pt
+
+# --- Calisma zamaninda olusan yuklemeler (hasta/test goruntuleri) ---
+frontend/wwwroot/uploads/*
+!frontend/wwwroot/uploads/.gitkeep
+!frontend/wwwroot/uploads/masks/
+frontend/wwwroot/uploads/masks/*
+!frontend/wwwroot/uploads/masks/.gitkeep
+!frontend/wwwroot/uploads/mesajlar/
+frontend/wwwroot/uploads/mesajlar/*
+!frontend/wwwroot/uploads/mesajlar/.gitkeep
+
+# --- IDE / isletim sistemi ---
+*.suo
+*.swp
+.DS_Store
+Thumbs.db

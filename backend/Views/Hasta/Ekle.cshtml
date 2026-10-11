@@ -1,0 +1,152 @@
+﻿@model BTİNME.Models.Hasta
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Yeni Hasta Ekle";
+}
+
+<div class="container py-3">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                <!-- Kart Başlığı -->
+                <div class="card-header bg-primary text-white p-4 border-0" style="background: linear-gradient(135deg, #0b1e36 0%, #1e3a5f 100%) !important;">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h4 class="fw-bold mb-0"><i class="bi bi-person-plus-fill me-2"></i>Yeni Hasta Kaydı</h4>
+                            <small class="text-info">Lütfen hasta kimlik ve iletişim bilgilerini giriniz.</small>
+                        </div>
+                        <a asp-action="Index" class="btn btn-outline-light btn-sm rounded-pill px-3">
+                            <i class="bi bi-arrow-left me-1"></i> İptal
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Kayıt Formu -->
+                <div class="card-body p-4 bg-white">
+
+                    <!-- HASTA SİSTEMDE VARSA GÖRÜNECEK BİLGİ PANELİ -->
+                    <div id="hastaKayıtlıAlert" class="alert alert-success border-0 shadow-sm rounded-3 mb-4 d-none">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-check-circle-fill fs-3 me-3 text-success"></i>
+                            <div>
+                                <strong class="d-block">Bu Hasta Sistemde Kayıtlı!</strong>
+                                <small>Hasta bilgileri veritabanından getirildi. İşlemi onayladığınızda hasta, <strong>Hasta Yönetim Panelinize</strong> eklenecektir.</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <form asp-action="Ekle" method="post">
+
+                        <!-- TC KIMLIK NO -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold small text-secondary">TC KİMLİK NUMARASI</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light"><i class="bi bi-card-heading text-muted"></i></span>
+                                <input type="text" id="tcInput" asp-for="Tc" class="form-control" placeholder="11 Haneli TC Kimlik No" maxlength="11" required autocomplete="off" />
+                                <button type="button" class="btn btn-outline-primary" onclick="tcKontrolEt()">
+                                    <i class="bi bi-search me-1"></i> Sorgula
+                                </button>
+                            </div>
+                            <span asp-validation-for="Tc" class="text-danger small"></span>
+                        </div>
+
+                        <!-- AD VE SOYAD -->
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold small text-secondary">HASTA ADI</label>
+                                <input type="text" id="isimInput" asp-for="Isim" class="form-control" placeholder="Adı" required />
+                                <span asp-validation-for="Isim" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold small text-secondary">HASTA SOYADI</label>
+                                <input type="text" id="soyadInput" asp-for="Soyad" class="form-control" placeholder="Soyadı" required />
+                                <span asp-validation-for="Soyad" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <!-- CİNSİYET VE DOĞUM TARİHİ -->
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold small text-secondary">CİNSİYET</label>
+                                <select id="cinsiyetSelect" asp-for="Cinsiyet" class="form-select" required>
+                                    <option value="">Seçiniz...</option>
+                                    <option value="Erkek">Erkek</option>
+                                    <option value="Kadın">Kadın</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold small text-secondary">DOĞUM TARİHİ</label>
+                                <input type="date" id="dogumTarihiInput" asp-for="DogumTarihi" class="form-control" />
+                            </div>
+                        </div>
+
+                        <!-- TELEFON -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold small text-secondary">TELEFON NUMARASI</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light"><i class="bi bi-telephone text-muted"></i></span>
+                                <input type="text" id="telefonInput" asp-for="Telefon" class="form-control" placeholder="05XX XXX XX XX" />
+                            </div>
+                        </div>
+
+                        <!-- KAYDET BUTONU -->
+                        <button type="submit" id="btnKaydet" class="btn btn-primary w-100 py-2-5 fw-bold rounded-3 shadow-sm" style="background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);">
+                            <i class="bi bi-check-circle-fill me-1"></i> Hastayı Kaydet
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function tcKontrolEt() {
+            var tc = $('#tcInput').val().trim();
+            if (tc.length === 11) {
+                $.get('/Hasta/TcKontrolEt?tc=' + tc, function (data) {
+                    if (data && data.varMi) {
+                        // Bilgileri doldur ve kilitles
+                        $('#isimInput').val(data.isim).prop('readonly', true);
+                        $('#soyadInput').val(data.soyad).prop('readonly', true);
+                        $('#cinsiyetSelect').val(data.cinsiyet).prop('disabled', true);
+                        $('#dogumTarihiInput').val(data.dogumTarihi).prop('readonly', true);
+                        $('#telefonInput').val(data.telefon).prop('readonly', true);
+
+                        // Uyarıyı göster ve Butonu "Hastayı Listeme Ekle" Yap
+                        $('#hastaKayıtlıAlert').removeClass('d-none');
+                        $('#btnKaydet')
+                            .html('<i class="bi bi-person-plus-fill me-1"></i> Hastayı Listeme Ekle')
+                            .removeClass('btn-primary')
+                            .addClass('btn-success')
+                            .css('background', 'linear-gradient(135deg, #198754 0%, #146c43 100%)');
+                    } else {
+                        // Yeni hasta ise alanları temizle/aç
+                        $('#isimInput').prop('readonly', false);
+                        $('#soyadInput').prop('readonly', false);
+                        $('#cinsiyetSelect').prop('disabled', false);
+                        $('#dogumTarihiInput').prop('readonly', false);
+                        $('#telefonInput').prop('readonly', false);
+
+                        $('#hastaKayıtlıAlert').addClass('d-none');
+                        $('#btnKaydet')
+                            .html('<i class="bi bi-check-circle-fill me-1"></i> Hastayı Kaydet')
+                            .removeClass('btn-success')
+                            .addClass('btn-primary')
+                            .css('background', 'linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%)');
+                    }
+                });
+            }
+        }
+
+        $(document).ready(function () {
+            $('#tcInput').on('keyup change blur', function () {
+                if ($(this).val().trim().length === 11) {
+                    tcKontrolEt();
+                }
+            });
+        });
+    </script>
+}

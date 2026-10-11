@@ -1,0 +1,560 @@
+﻿@model IEnumerable<BTİNME.Models.Mesaj>
+
+@{
+    var doktorOzetleri = ViewBag.DoktorOzetleri as List<BTİNME.Models.MesajDoktorOzet> ?? new List<BTİNME.Models.MesajDoktorOzet>();
+    var seciliDoktor = ViewBag.SeciliDoktor as BTİNME.Models.Doktor;
+    int aktifDoktorId = ViewBag.AktifDoktorId ?? 0;
+    int? aliciId = ViewBag.AliciId;
+    bool aktifDoktorHastaneVarMi = ViewBag.AktifDoktorHastaneVarMi ?? true;
+}
+
+<style>
+    .chat-bubble {
+        max-width: 78%;
+        border-radius: 16px;
+        padding: 10px 14px;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+    }
+
+        .chat-bubble.mine {
+            background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+            color: #fff;
+            border-bottom-right-radius: 4px !important;
+        }
+
+        .chat-bubble.theirs {
+            background: #ffffff;
+            color: #212529;
+            border: 1px solid #e2e8f0;
+            border-bottom-left-radius: 4px !important;
+        }
+
+    /* WHATSAPP TARZI RESİM IZGARASI */
+    .msg-img-grid {
+        display: grid;
+        gap: 4px;
+        border-radius: 12px;
+        overflow: hidden;
+        margin-bottom: 6px;
+        max-width: 280px;
+    }
+
+        .msg-img-grid[data-count="1"] {
+            grid-template-columns: 1fr;
+        }
+
+        .msg-img-grid[data-count="2"] {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .msg-img-grid[data-count="3"] {
+            grid-template-columns: 1fr 1fr;
+        }
+
+            .msg-img-grid[data-count="3"] .msg-img-item:first-child {
+                grid-row: span 2;
+            }
+
+        .msg-img-grid[data-count-4plus="1"] {
+            grid-template-columns: 1fr 1fr;
+        }
+
+    .msg-img-item {
+        position: relative;
+        cursor: pointer;
+        overflow: hidden;
+        background: rgba(0,0,0,0.05);
+    }
+
+        .msg-img-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            aspect-ratio: 1 / 1;
+            transition: transform .2s ease;
+        }
+
+        .msg-img-item:hover img {
+            transform: scale(1.05);
+        }
+
+    .msg-img-more-overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(0,0,0,0.55);
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 1.05rem;
+    }
+
+    /* ÖNİZLEME ŞERİDİ (gönderim öncesi) */
+    .attach-preview-strip {
+        display: none;
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 10px 14px 0 14px;
+    }
+
+        .attach-preview-strip.has-items {
+            display: flex;
+        }
+
+    .attach-preview-item {
+        position: relative;
+        width: 60px;
+        height: 60px;
+        border-radius: 10px;
+        overflow: hidden;
+        border: 1px solid #e2e8f0;
+    }
+
+        .attach-preview-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+    .attach-preview-remove {
+        position: absolute;
+        top: 2px;
+        right: 2px;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: rgba(0,0,0,0.65);
+        color: #fff;
+        border: none;
+        font-size: 0.65rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 1;
+    }
+
+    .attach-btn {
+        background: transparent;
+        border: none;
+        color: #64748b;
+        font-size: 1.25rem;
+        padding: 0 6px;
+    }
+
+        .attach-btn:hover {
+            color: #0d6efd;
+        }
+
+    #chatDropZone.drag-over {
+        outline: 2px dashed #0d6efd;
+        outline-offset: -6px;
+        background: rgba(13, 110, 253, 0.05);
+    }
+
+    /* ---- WHATSAPP TARZI DOKTOR LİSTESİ ---- */
+    .doktor-list-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+    }
+
+    .doktor-avatar-wrap {
+        position: relative;
+        flex-shrink: 0;
+    }
+
+    .doktor-item-body {
+        flex: 1;
+        min-width: 0;
+        text-align: left;
+    }
+
+    .doktor-item-top-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 6px;
+    }
+
+    .doktor-item-name {
+        font-size: 0.86rem;
+        font-weight: 600;
+    }
+
+    .doktor-item-time {
+        font-size: 0.65rem;
+        color: #94a3b8;
+        white-space: nowrap;
+        flex-shrink: 0;
+    }
+
+    .doktor-item-bottom-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .doktor-item-preview {
+        font-size: 0.74rem;
+        color: #64748b;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 100%;
+    }
+
+    .doktor-unread-badge {
+        background: #dc3545;
+        color: #fff;
+        font-size: 0.65rem;
+        font-weight: 700;
+        min-width: 18px;
+        height: 18px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 5px;
+        flex-shrink: 0;
+    }
+
+    /* hastane yok / doktor listesi boş bilgilendirme kutusu */
+    .doktor-list-empty-info {
+        padding: 24px 16px;
+        text-align: center;
+        color: #94a3b8;
+        font-size: 0.78rem;
+    }
+
+        .doktor-list-empty-info i {
+            font-size: 1.8rem;
+            display: block;
+            margin-bottom: 8px;
+            opacity: 0.5;
+        }
+</style>
+
+<div class="d-flex h-100 position-relative" style="min-height: 520px; max-height: calc(100vh - 80px);">
+
+    <!-- SOL TARAF: DOKTOR LİSTESİ (WHATSAPP TARZI, AYNI HASTANEYLE SINIRLI) -->
+    <div class="border-end bg-light" style="width: 260px; flex-shrink: 0;">
+        <div class="p-3 bg-white border-bottom">
+            <small class="fw-bold text-uppercase text-secondary" style="font-size: 0.7rem; letter-spacing: 1px;">
+                <i class="bi bi-people me-1"></i> Doktorlar
+            </small>
+        </div>
+
+        <div class="list-group list-group-flush overflow-auto" style="max-height: 500px;">
+
+            @if (!aktifDoktorHastaneVarMi)
+            {
+                <div class="doktor-list-empty-info">
+                    <i class="bi bi-building-x"></i>
+                    Henüz bir hastaneye atanmadınız.<br />Lütfen yöneticinizle iletişime geçin.
+                </div>
+            }
+            else if (!doktorOzetleri.Any())
+            {
+                <div class="doktor-list-empty-info">
+                    <i class="bi bi-people"></i>
+                    Hastanenizde kayıtlı başka doktor bulunmuyor.
+                </div>
+            }
+            else
+            {
+                @foreach (var doc in doktorOzetleri)
+                {
+                    bool isSelected = aliciId == doc.DoktorId;
+                    string saatMetni = "";
+                    if (doc.SonMesajTarihi.HasValue)
+                    {
+                        saatMetni = doc.SonMesajTarihi.Value.Date == DateTime.Today
+                        ? doc.SonMesajTarihi.Value.ToString("HH:mm")
+                        : doc.SonMesajTarihi.Value.ToString("dd.MM.yyyy");
+                    }
+
+                    <button type="button"
+                            onclick="doktorSec(@doc.DoktorId)"
+                            class="list-group-item list-group-item-action border-0 py-2 px-3 @(isSelected ? "bg-white border-start border-4 border-primary shadow-sm" : "bg-transparent")">
+
+                        <div class="doktor-list-item">
+                            <div class="doktor-avatar-wrap">
+                                <div class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold shadow-sm @(isSelected ? "bg-primary" : "bg-secondary")"
+                                     style="width: 40px; height: 40px; font-size: 0.85rem;">
+                                    @(doc.Isim.Length > 0 ? doc.Isim.Substring(0, 1) : "?")@(doc.Soyad.Length > 0 ? doc.Soyad.Substring(0, 1) : "")
+                                </div>
+                            </div>
+
+                            <div class="doktor-item-body">
+                                <div class="doktor-item-top-row">
+                                    <span class="doktor-item-name text-truncate @(isSelected ? "text-primary" : "text-dark")">Dr. @doc.Isim @doc.Soyad</span>
+                                    @if (!string.IsNullOrEmpty(saatMetni))
+                                    {
+                                        <span class="doktor-item-time">@saatMetni</span>
+                                    }
+                                </div>
+                                <div class="doktor-item-bottom-row">
+                                    <span class="doktor-item-preview">@doc.SonMesajOnizleme</span>
+                                    @if (doc.OkunmamisSayisi > 0)
+                                    {
+                                        <span class="doktor-unread-badge">@(doc.OkunmamisSayisi > 99 ? "99+" : doc.OkunmamisSayisi.ToString())</span>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </button>
+                }
+            }
+        </div>
+    </div>
+
+    <!-- SAĞ TARAF: SOHBET / MESAJLAŞMA ALANI -->
+    <div class="d-flex flex-column flex-grow-1 bg-white">
+
+        @if (seciliDoktor != null)
+        {
+            <!-- SOHBET BAŞLIĞI -->
+            <div class="p-3 border-bottom bg-light d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold" style="width: 38px; height: 38px;">
+                        @(seciliDoktor.Isim?.Substring(0, 1))@(seciliDoktor.Soyad?.Substring(0, 1))
+                    </div>
+                    <div>
+                        <h6 class="fw-bold mb-0 text-dark">Dr. @seciliDoktor.Isim @seciliDoktor.Soyad</h6>
+                        <small class="text-muted" style="font-size: 0.75rem;">@(seciliDoktor.UzmanlikAlani ?? "Konsültasyon Hekimi")</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MESAJ GEÇMİŞİ AKIŞI -->
+            <div id="chatMessageBox" class="p-3 overflow-auto flex-grow-1 bg-body-tertiary position-relative" style="height: 380px;">
+                <div id="chatDropZone" class="position-absolute top-0 start-0 w-100 h-100" style="pointer-events:none;"></div>
+
+                @if (Model != null && Model.Any())
+                {
+                    @foreach (var msg in Model)
+                    {
+                        bool benimMesajim = msg.GonderenDoktorId == aktifDoktorId;
+                        var ekler = msg.Ekler?.ToList() ?? new List<BTİNME.Models.MesajEk>();
+                        int ekSayisi = ekler.Count;
+                        var ekJson = System.Text.Json.JsonSerializer.Serialize(ekler.Select(e => e.DosyaYolu));
+
+                        <div class="d-flex mb-3 @(benimMesajim ? "justify-content-end" : "justify-content-start")">
+                            <div class="chat-bubble @(benimMesajim ? "mine" : "theirs")">
+
+                                @if (ekSayisi > 0)
+                                {
+                                    <div class="msg-img-grid"
+                                         data-count="@(ekSayisi <= 3 ? ekSayisi.ToString() : "4")"
+                                         data-count-4plus="@(ekSayisi > 3 ? "1" : "0")"
+                                         data-images='@ekJson'>
+                                        @{
+                                            int gosterilecek = Math.Min(ekSayisi, 4);
+                                        }
+                                        @for (int i = 0; i < gosterilecek; i++)
+                                        {
+                                            <div class="msg-img-item" onclick="openLightbox(this)" data-index="@i">
+                                                <img src="@ekler[i].DosyaYolu" alt="Ek görsel" />
+                                                @if (i == 3 && ekSayisi > 4)
+                                                {
+                                                    <div class="msg-img-more-overlay">+@(ekSayisi - 4)</div>
+                                                }
+                                            </div>
+                                        }
+                                    </div>
+                                }
+
+                                @if (!string.IsNullOrWhiteSpace(msg.Icerik))
+                                {
+                                    <p class="mb-1 small" style="white-space: pre-line; word-break: break-word;">@msg.Icerik</p>
+                                }
+
+                                <div class="text-end" style="font-size: 0.65rem; opacity: 0.8;">
+                                    @(msg.GonderimTarihi?.ToString("HH:mm"))
+                                    @if (benimMesajim)
+                                    {
+                                        <i class="bi bi-check2-all ms-1"></i>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="text-center py-5 text-muted">
+                        <i class="bi bi-chat-dots display-5 d-block mb-2 opacity-50"></i>
+                        <small>Henüz bir mesajlaşma bulunmuyor. Konsültasyon başlatabilirsiniz.</small>
+                    </div>
+                }
+            </div>
+
+            <!-- SEÇİLEN GÖRSEL ÖNİZLEME ŞERİDİ -->
+            <div class="attach-preview-strip" id="attachPreviewStrip"></div>
+
+            <!-- MESAJ GÖNDERME FORMU -->
+            <div class="p-3 border-top bg-white">
+                <form id="msgSendForm" onsubmit="mesajGonder(event)">
+                    <input type="hidden" name="aliciDoktorId" id="aliciDoktorIdInput" value="@seciliDoktor.DoktorId" />
+                    <input type="file" id="msgFileInput" accept="image/*" multiple class="d-none" onchange="handleFileSelect(this.files)" />
+
+                    <div class="input-group">
+                        <button type="button" class="btn attach-btn border-end-0" onclick="document.getElementById('msgFileInput').click()" title="Resim ekle">
+                            <i class="bi bi-paperclip"></i>
+                        </button>
+                        <input type="text" name="icerik" id="msgIcerikInput" class="form-control border-start-0 border-end-0 py-2 px-2" placeholder="Mesajınızı yazın..." autocomplete="off" />
+                        <button class="btn btn-primary px-4" type="submit" id="msgSendBtn">
+                            <i class="bi bi-send-fill me-1"></i> Gönder
+                        </button>
+                    </div>
+                    <small class="text-muted d-block mt-1" style="font-size: 0.68rem;">
+                        <i class="bi bi-info-circle me-1"></i>Resimleri ataç ikonuyla seçebilir veya doğrudan sohbet alanına sürükleyip bırakabilirsiniz.
+                    </small>
+                </form>
+            </div>
+        }
+        else
+        {
+            <!-- DOKTOR SEÇİLMEDİĞİNDEKİ BOŞ EKRAN -->
+            <div class="d-flex flex-column align-items-center justify-content-center h-100 text-muted p-4">
+                <i class="bi bi-chat-square-text display-3 text-primary opacity-25 mb-3"></i>
+                <h6 class="fw-bold text-dark">Konsültasyon Başlatın</h6>
+                <small class="text-center">Sol taraftaki listeden görüşmek istediğiniz meslektaşınızı seçebilirsiniz.</small>
+            </div>
+        }
+
+    </div>
+</div>
+
+<!-- GÖRSEL BÜYÜTME (LIGHTBOX) -->
+<div id="lightboxBackdrop" class="position-fixed top-0 start-0 w-100 h-100 d-none" style="background: rgba(5,7,12,0.92); z-index: 3000; align-items:center; justify-content:center; flex-direction:column;">
+    <button type="button" onclick="closeLightbox()" class="position-absolute top-0 end-0 m-3 btn btn-sm rounded-circle" style="width:40px;height:40px; background: rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:#fff;">
+        <i class="bi bi-x-lg"></i>
+    </button>
+    <button type="button" onclick="lightboxNav(-1)" class="position-absolute top-50 start-0 translate-middle-y ms-3 btn rounded-circle" style="width:44px;height:44px; background: rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:#fff;">
+        <i class="bi bi-chevron-left"></i>
+    </button>
+    <img id="lightboxImg" src="" alt="" style="max-width:85vw; max-height:80vh; object-fit:contain; border-radius:8px;" />
+    <button type="button" onclick="lightboxNav(1)" class="position-absolute top-50 end-0 translate-middle-y me-3 btn rounded-circle" style="width:44px;height:44px; background: rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:#fff;">
+        <i class="bi bi-chevron-right"></i>
+    </button>
+    <div id="lightboxCounter" class="text-white small mt-3"></div>
+</div>
+
+<script>
+    let selectedFiles = [];
+
+    function handleFileSelect(fileList) {
+        for (const file of fileList) {
+            if (file.type.startsWith('image/')) {
+                selectedFiles.push(file);
+            }
+        }
+        renderPreviewStrip();
+        document.getElementById('msgFileInput').value = '';
+    }
+
+    function renderPreviewStrip() {
+        const strip = document.getElementById('attachPreviewStrip');
+        if (!strip) return;
+        strip.innerHTML = '';
+        strip.classList.toggle('has-items', selectedFiles.length > 0);
+
+        selectedFiles.forEach((file, idx) => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const item = document.createElement('div');
+                item.className = 'attach-preview-item';
+                item.innerHTML = `<img src="${e.target.result}" /><button type="button" class="attach-preview-remove" onclick="removeSelectedFile(${idx})"><i class="bi bi-x"></i></button>`;
+                strip.appendChild(item);
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+
+    function removeSelectedFile(idx) {
+        selectedFiles.splice(idx, 1);
+        renderPreviewStrip();
+    }
+
+    const chatBox = document.getElementById('chatMessageBox');
+    if (chatBox) {
+        ['dragenter', 'dragover'].forEach(evt => {
+            chatBox.addEventListener(evt, (e) => {
+                e.preventDefault();
+                chatBox.classList.add('drag-over');
+            });
+        });
+        ['dragleave', 'drop'].forEach(evt => {
+            chatBox.addEventListener(evt, (e) => {
+                e.preventDefault();
+                chatBox.classList.remove('drag-over');
+            });
+        });
+        chatBox.addEventListener('drop', (e) => {
+            if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                handleFileSelect(e.dataTransfer.files);
+            }
+        });
+    }
+
+    function mesajGonder(e) {
+        e.preventDefault();
+
+        const icerik = document.getElementById('msgIcerikInput').value.trim();
+        if (!icerik && selectedFiles.length === 0) return;
+
+        const sendBtn = document.getElementById('msgSendBtn');
+        sendBtn.disabled = true;
+        sendBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+
+        const formData = new FormData();
+        formData.append('aliciDoktorId', document.getElementById('aliciDoktorIdInput').value);
+        formData.append('icerik', icerik);
+        selectedFiles.forEach(file => formData.append('dosyalar', file));
+
+        fetch('/Mesaj/Gonder', {
+            method: 'POST',
+            body: formData
+        })
+            .then(r => r.text())
+            .then(html => {
+                document.getElementById('mesajPanelIcerik').innerHTML = html;
+                const box = document.getElementById('chatMessageBox');
+                if (box) box.scrollTop = box.scrollHeight;
+                selectedFiles = [];
+                okunmamisMesajKontrolEt();
+            });
+    }
+
+    let lightboxImages = [];
+    let lightboxIndex = 0;
+
+    function openLightbox(el) {
+        const grid = el.closest('.msg-img-grid');
+        lightboxImages = JSON.parse(grid.dataset.images);
+        lightboxIndex = parseInt(el.dataset.index, 10);
+        showLightboxImage();
+        document.getElementById('lightboxBackdrop').classList.remove('d-none');
+        document.getElementById('lightboxBackdrop').classList.add('d-flex');
+    }
+
+    function showLightboxImage() {
+        document.getElementById('lightboxImg').src = lightboxImages[lightboxIndex];
+        document.getElementById('lightboxCounter').textContent = (lightboxIndex + 1) + ' / ' + lightboxImages.length;
+    }
+
+    function lightboxNav(dir) {
+        lightboxIndex = (lightboxIndex + dir + lightboxImages.length) % lightboxImages.length;
+        showLightboxImage();
+    }
+
+    function closeLightbox() {
+        document.getElementById('lightboxBackdrop').classList.add('d-none');
+        document.getElementById('lightboxBackdrop').classList.remove('d-flex');
+    }
+</script>

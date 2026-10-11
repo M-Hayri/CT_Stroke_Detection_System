@@ -1,0 +1,347 @@
+﻿@model BTİNME.Models.Hasta
+
+@{
+    ViewData["Title"] = "Hasta Klinik Dosyası";
+}
+
+<style>
+    .hasta-header-card {
+        background: linear-gradient(135deg, #0b1e36 0%, #1e3a5f 100%);
+        border-radius: 20px;
+        color: #fff;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hasta-avatar {
+        width: 72px;
+        height: 72px;
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: #fff;
+        flex-shrink: 0;
+    }
+
+    .hasta-meta-item {
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 10px;
+        padding: 6px 12px;
+        font-size: 0.82rem;
+        color: #dbe4f0;
+    }
+
+    .section-card {
+        background: #fff;
+        border: 1px solid #eef1f5;
+        border-radius: 18px;
+        box-shadow: 0 4px 18px rgba(15, 30, 60, 0.05);
+        padding: 24px;
+    }
+
+    .section-title {
+        font-size: 1.02rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 18px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid #f0f2f5;
+    }
+
+    .form-label-sm {
+        font-size: 0.74rem;
+        font-weight: 700;
+        letter-spacing: 0.4px;
+        color: #64748b;
+        text-transform: uppercase;
+        margin-bottom: 4px;
+    }
+
+    .form-control-modern {
+        border-radius: 10px;
+        border: 1.5px solid #e5e9f0;
+        padding: 10px 14px;
+        font-size: 0.9rem;
+        background: #f8fafc;
+        transition: all .2s ease;
+    }
+
+        .form-control-modern:focus {
+            background: #fff;
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.12);
+        }
+
+    .btn-modern-warning {
+        background: linear-gradient(135deg, #ffb020 0%, #f59e0b 100%);
+        border: none;
+        border-radius: 10px;
+        font-weight: 700;
+        color: #402c00;
+        box-shadow: 0 6px 16px rgba(245, 158, 11, 0.25);
+    }
+
+    .btn-modern-primary {
+        background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+        border: none;
+        border-radius: 10px;
+        font-weight: 700;
+        box-shadow: 0 6px 16px rgba(13, 110, 253, 0.25);
+    }
+
+    .gecmis-pill {
+        border: 1px solid #eef1f5;
+        background: #f8fafc;
+        border-radius: 12px;
+        padding: 12px 14px;
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        min-width: 260px;
+        flex: 1 1 260px;
+    }
+
+    .gecmis-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        font-size: 1rem;
+    }
+
+    .timeline-item {
+        border-left: 3px solid #0d6efd;
+        background: #f8fafc;
+        border-radius: 0 14px 14px 0;
+        padding: 16px 18px;
+        margin-bottom: 14px;
+        position: relative;
+    }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -8px;
+            top: 20px;
+            width: 13px;
+            height: 13px;
+            border-radius: 50%;
+            background: #0d6efd;
+            border: 2px solid #fff;
+            box-shadow: 0 0 0 2px #0d6efd33;
+        }
+
+    .doctor-tag {
+        background: #eaf2ff;
+        color: #0d6efd;
+        font-size: 0.76rem;
+        font-weight: 700;
+        padding: 4px 10px;
+        border-radius: 20px;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    /* EKLENEN HASTANE ROZETİ STİLİ */
+    .hospital-tag {
+        background: #fff3cd;
+        color: #856404;
+        font-size: 0.76rem;
+        font-weight: 700;
+        padding: 4px 10px;
+        border-radius: 20px;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+</style>
+
+<div class="container-fluid py-3">
+
+    <!-- ÜST HASTA BİLGİ BAŞLIĞI -->
+    <div class="hasta-header-card p-4 mb-4">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+
+            <div class="d-flex align-items-center gap-3">
+                <div class="hasta-avatar">
+                    @(Model.Isim?.Substring(0, 1))@(Model.Soyad?.Substring(0, 1))
+                </div>
+                <div>
+                    <span class="badge bg-white text-primary fw-bold px-3 py-2 rounded-pill mb-2">
+                        <i class="bi bi-card-heading me-1"></i> TC: @Model.Tc
+                    </span>
+                    <h3 class="fw-bold mb-2">@Model.Isim @Model.Soyad</h3>
+                    <div class="d-flex flex-wrap gap-2">
+                        <span class="hasta-meta-item"><i class="bi bi-telephone-fill me-1 text-info"></i>@(Model.Telefon ?? "Telefon Yok")</span>
+                        <span class="hasta-meta-item"><i class="bi bi-gender-ambiguous me-1 text-info"></i>@(Model.Cinsiyet ?? "Belirtilmemiş")</span>
+                        <span class="hasta-meta-item"><i class="bi bi-calendar-event me-1 text-info"></i>@(Model.DogumTarihi?.ToString("dd.MM.yyyy") ?? "Belirtilmemiş")</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex gap-2">
+                <a asp-controller="Hasta" asp-action="Index" class="btn btn-outline-light rounded-pill px-3">
+                    <i class="bi bi-arrow-left me-1"></i> Hasta Listesi
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- SOL KOLON: Veri Giriş Formları -->
+        <div class="col-lg-5">
+
+            <!-- 1. Sağlık Geçmişi (Özgeçmiş) Giriş Formu -->
+            <div class="section-card mb-4">
+                <div class="section-title text-warning">
+                    <i class="bi bi-activity"></i> Sağlık Geçmişi / Anamnez Ekle
+                </div>
+                <form asp-action="SaglikGecmisiEkle" method="post">
+                    <input type="hidden" name="hastaId" value="@Model.HastaId" />
+
+                    <div class="mb-3">
+                        <div class="form-label-sm">Hastalık Adı</div>
+                        <input type="text" name="hastalikAdi" class="form-control form-control-modern" placeholder="Örn: Hipertansiyon, Tip 2 Diyabet" required />
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-7">
+                            <div class="form-label-sm">Tanı Tarihi</div>
+                            <input type="date" name="taniTarihi" class="form-control form-control-modern" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                        </div>
+                        <div class="col-md-5 d-flex align-items-end">
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" name="kronikMi" value="true" id="kronikCheck">
+                                <label class="form-check-label small fw-bold text-danger" for="kronikCheck">
+                                    Kronik Rahatsızlık
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="form-label-sm">Açıklama</div>
+                        <input type="text" name="aciklama" class="form-control form-control-modern" placeholder="Örn: Düzenli ilaç kullanıyor" />
+                    </div>
+
+                    <button type="submit" class="btn btn-modern-warning w-100 py-2">
+                        <i class="bi bi-plus-circle me-1"></i> Sağlık Geçmişine Kaydet
+                    </button>
+                </form>
+            </div>
+
+            <!-- 2. Yeni Muayene Giriş Formu -->
+            <div class="section-card">
+                <div class="section-title text-primary">
+                    <i class="bi bi-file-earmark-medical-fill"></i> Yeni Muayene Kaydı
+                </div>
+                <form asp-action="MuayeneEkle" method="post">
+                    <input type="hidden" name="hastaId" value="@Model.HastaId" />
+
+                    <div class="mb-3">
+                        <div class="form-label-sm">Teşhis / Klinik Tanı</div>
+                        <input type="text" name="teshis" class="form-control form-control-modern" placeholder="Örn: Akut İskemik İnme Şüphesi" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="form-label-sm">Doktor Muayene Notları</div>
+                        <textarea name="notlar" class="form-control form-control-modern" rows="4" placeholder="Klinik bulgular, hastanın şikayetleri ve karar notları..."></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-modern-primary w-100 py-2 text-white">
+                        <i class="bi bi-save-fill me-1"></i> Muayeneyi Kaydet
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- SAĞ KOLON: İnceleme ve Liste Panelleri -->
+        <div class="col-lg-7">
+
+            <!-- Sağlık Geçmişi (Özgeçmiş) Listesi -->
+            <div class="section-card mb-4">
+                <div class="section-title text-dark">
+                    <i class="bi bi-shield-plus text-warning"></i> Hastanın Geçmiş Rahatsızlıkları
+                </div>
+                @if (Model.SaglikGecmisis != null && Model.SaglikGecmisis.Any())
+                {
+                    <div class="d-flex flex-wrap gap-2">
+                        @foreach (var g in Model.SaglikGecmisis.OrderByDescending(x => x.TaniTarihi))
+                        {
+                            <div class="gecmis-pill">
+                                <div class="gecmis-icon @(g.KronikMi == true ? "bg-danger bg-opacity-10 text-danger" : "bg-info bg-opacity-10 text-info")">
+                                    <i class="bi bi-heart-pulse-fill"></i>
+                                </div>
+                                <div>
+                                    <strong class="d-block small text-dark">@g.HastalikAdi @(g.KronikMi == true ? "(Kronik)" : "")</strong>
+                                    <small class="text-muted" style="font-size: 0.76rem;">
+                                        @(g.TaniTarihi?.ToString("dd.MM.yyyy")) @(!string.IsNullOrEmpty(g.Aciklama) ? $" — {g.Aciklama}" : "")
+                                    </small>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="text-muted small fst-italic">Kayıtlı geçmiş hastalık veya kronik durum bulunmuyor.</div>
+                }
+            </div>
+
+            <!-- Geçmiş Muayeneler Paneli -->
+            <div class="section-card">
+                <div class="section-title text-dark">
+                    <i class="bi bi-clock-history text-primary"></i> Geçmiş Muayene Kayıtları
+                </div>
+                @if (Model.Muayenes != null && Model.Muayenes.Any())
+                {
+                    <div class="timeline">
+                        @foreach (var muayene in Model.Muayenes.OrderByDescending(m => m.Tarih))
+                        {
+                            <div class="timeline-item">
+                                <div class="d-flex justify-content-between align-items-start mb-2 flex-wrap gap-2">
+                                    <h6 class="fw-bold text-dark mb-0">@muayene.Teshis</h6>
+                                    <span class="badge bg-secondary bg-opacity-10 text-secondary rounded-pill">
+                                        <i class="bi bi-calendar3 me-1"></i>@(muayene.Tarih?.ToString("dd.MM.yyyy HH:mm"))
+                                    </span>
+                                </div>
+                                <p class="text-muted small mb-3">@(muayene.Notlar ?? "Not eklenmemiş.")</p>
+
+                                <!-- HASTANE VE DOKTOR ROZETLERİ -->
+                                <div class="d-flex justify-content-end align-items-center gap-2 flex-wrap">
+                                    <span class="hospital-tag">
+                                        <i class="bi bi-hospital-fill"></i>
+                                        @(muayene.Doktor?.Hastane?.Ad ?? "Hastane Tanımsız")
+                                    </span>
+                                    <span class="doctor-tag">
+                                        <i class="bi bi-person-badge"></i>
+                                        @(muayene.Doktor != null ? $"Dr. {muayene.Doktor.Isim} {muayene.Doktor.Soyad}" : "Doktor Bilgisi Yok")
+                                    </span>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-info border-0 rounded-3 text-center py-3 mb-0">
+                        <i class="bi bi-info-circle me-1"></i> Henüz kaydedilmiş muayene yok.
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
